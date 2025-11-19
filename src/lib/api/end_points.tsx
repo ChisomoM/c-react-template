@@ -1,6 +1,10 @@
 export const API: Record<string, string> = {
   // ADMIN END-POINT
   ADMIN_LOGIN: "admin/login",
+  // MERCHANT END-POINTS
+  LOGIN: "login",
+  REGISTER: "register",
+  REFRESH_TOKEN: "refresh-token",
 };
 
 export const getRoute = (val: string): string => {

@@ -5,6 +5,25 @@ import { API, getRoute, pipe } from "./end_points";
 
 const ROUTING_URL: string = import.meta.env.VITE_BACKEND_URL as string;
 
+// Storage key for auth tokens (matches AuthContext)
+const AUTH_TOKENS_KEY = 'auth_tokens';
+
+// Get access token from localStorage (used by AuthContext)
+const getAccessTokenFromStorage = (): string | null => {
+  try {
+    if (typeof window === 'undefined') return null;
+    
+    const tokensJson = localStorage.getItem(AUTH_TOKENS_KEY);
+    if (!tokensJson) return null;
+    
+    const tokens = JSON.parse(tokensJson);
+    return tokens.token || tokens.access_token || null;
+  } catch (err) {
+    console.error('Failed to get access token from storage:', err);
+    return null;
+  }
+};
+
 // First, let's create a function to refresh the token
 const refreshAccessToken = async () => {
   try {
@@ -58,8 +77,10 @@ export const fetchData = async (
   const h = new Headers();
   h.append("Content-Type", "application/json");
 
-  if (typeof window != "undefined" && !["ADMIN_LOGIN"].includes(key)) {
-    const accessToken = Storage.getItem("accessToken");
+  // Read tokens from localStorage (AuthContext storage)
+  // Skip for login/register endpoints
+  if (typeof window !== "undefined" && !["LOGIN", "ADMIN_LOGIN", "REGISTER"].includes(key)) {
+    const accessToken = getAccessTokenFromStorage();
     if (accessToken) {
       h.append("Authorization", `Bearer ${accessToken}`);
     }
@@ -105,7 +126,8 @@ export const fetchData = async (
   }
 
   // If the response is 401, try to refresh the token and retry the request once
-  if (res.status === 401) {
+  // Skip token refresh for login endpoints - let them fail naturally
+  if (res.status === 401 && !["LOGIN", "ADMIN_LOGIN", "REGISTER"].includes(key)) {
     try {
       const newAccessToken = await refreshAccessToken();
       Storage.setItem("accessToken", newAccessToken);
@@ -122,11 +144,7 @@ export const fetchData = async (
         return retryResult.data;
       }
     } catch (refreshError) {
-      // Show a clear error toast if possible
-      // Instead of window.toast, throw a special error that the UI can catch
-      // and show a toast for session expiration.
-      // Example: throw new Error('SESSION_EXPIRED');
-      // Only clear tokens and log out if both access and refresh fail
+      console.error('Token refresh failed:', refreshError);
       sessionStorage.removeItem("accessToken");
       document.cookie =
         "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -139,9 +157,19 @@ export const fetchData = async (
       throw new Error("Too many requests. Try again later")
     }
 
-
-  const errorMessage = await res.json().then((res) => res.message);
-  throw new Error(errorMessage);
+  // Extract error message from API response
+  try {
+    const errorData = await res.json();
+    // Support multiple error response formats
+    const errorMessage = errorData?.message || errorData?.error || `Error: ${res.status} ${res.statusText}`;
+    throw new Error(errorMessage);
+  } catch (err) {
+    // If JSON parsing fails or it's already an error, handle it
+    if (err instanceof Error) {
+      throw err;
+    }
+    throw new Error(`Error: ${res.status} ${res.statusText}`);
+  }
 };
 
 // Export the refresh token function if needed elsewhere
