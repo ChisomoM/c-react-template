@@ -1,4 +1,4 @@
-import { ArrowRight, Zap, CreditCard, Phone, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Zap, Phone, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 

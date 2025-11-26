@@ -1,8 +1,6 @@
 ---
 applyTo: '**'
 ---
-Provide project context and coding guidelines that AI should follow when generating code, answering questions, or reviewing changes.
-
 # Project Context and Coding Guidelines
 Follow these guidelines when generating code, answering questions, or reviewing changes for this project:
 

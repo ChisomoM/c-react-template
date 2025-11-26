@@ -1,6 +1,6 @@
 
 // import { CorporateRegistrationModal } from './CorporateRegistrationModal';
-import { LoginPage } from '../(admin)/merchant/LoginPage';
+import { LoginPage } from '../(admin)/admin/LoginPage';
 import { useState } from 'react';
 
 export default function Login() {

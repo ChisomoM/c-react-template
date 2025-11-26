@@ -57,13 +57,13 @@ export default function AdminLayout() {
                   <SidebarMenuItem>
                     <SidebarMenuButton 
                       asChild 
-                      isActive={isActive('/admin') || isActive('/merchant/dashboard')}
+                      isActive={isActive('/admin') || isActive('/admin/dashboard')}
                       className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
                         isCollapsed ? 'justify-center px-2' : ''
                       }`}
                       title={isCollapsed ? 'Dashboard' : ''}
                     >
-                      <Link to="/merchant/dashboard" className="flex items-center gap-3">
+                      <Link to="/admin/dashboard" className="flex items-center gap-3">
                         <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
                         {!isCollapsed && <span>Dashboard</span>}
                       </Link>

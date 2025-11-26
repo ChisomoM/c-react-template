@@ -9,7 +9,7 @@
  */
 
 // Keep AccountType for backward compatibility in parts of the app that still need it
-export type AccountType = 'merchant' | 'system_admin';
+export type AccountType = 'admin';
 
 // User object returned by the new login endpoint
 export interface LoginUser {

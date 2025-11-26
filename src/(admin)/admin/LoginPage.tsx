@@ -17,7 +17,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
 
           {/* <img
             src="U-KYC-logo-stacked.png"
-            alt="Universal KYC"
+            alt="Chizo's React Template"
             className="w-auto h-20 sm:h-24 md:h-28 mx-auto transform hover:scale-105 transition-transform duration-300"
           /> */}
           {/* <div className="></div> */}
@@ -50,8 +50,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
               Secure Digital Identity Verification
             </h2>
             <p className="text-base lg:text-lg opacity-90 leading-relaxed max-w-lg">
-              Empowering businesses with streamlined KYC compliance, corporate registration, 
-              and identity verification services in one unified platform.
+              A modern web application template built with React and TypeScript.
             </p>
           </div>
 

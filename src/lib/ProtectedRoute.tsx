@@ -34,7 +34,7 @@ export function ProtectedRoute({
 
     // Determine effective account type from new user shape.
     // Prefer explicit `accountType` if present; otherwise infer from `is_superUser`.
-    const effectiveAccountType: AccountType = user.accountType ?? (user.is_superUser ? 'system_admin' : 'merchant');
+    const effectiveAccountType: AccountType = user.accountType ?? 'admin'; // (user.is_superUser ? 'system_admin' : 'merchant');
 
     if (!requiredTypes.includes(effectiveAccountType)) {
       return <Navigate to="/unauthorized" replace />;

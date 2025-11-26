@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const baseUser: AuthUser = {
         id: String(user.id ?? ''),
         email: user.email ?? '',
-        accountType: user.is_superUser ? 'system_admin' : 'merchant',
+        accountType: 'admin',
         isActive: !(user.blocked ?? false),
         isVerified: true,
         firstName: user.first_name ?? undefined,
@@ -124,7 +124,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.success('Login successful!');
 
         // Auto-redirect based on detected account type
-        const redirectPath = authUser.accountType === 'system_admin' ? '/admin/dashboard' : '/merchant/dashboard';
+        // const redirectPath = authUser.accountType === 'system_admin' ? '/admin/dashboard' : '/merchant/dashboard';
+        const redirectPath = '/admin/dashboard';
         navigate(redirectPath);
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Login failed';

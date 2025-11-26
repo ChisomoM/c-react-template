@@ -141,7 +141,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
             <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-500">New to Universal KYC?</span>
+            <span className="bg-white px-2 text-gray-500">Don't have an account?</span>
           </div>
         </div>
 
@@ -157,7 +157,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
             Register Your Business
           </Button>
           <p className="text-xs text-center text-gray-500 leading-relaxed">
-            Complete your corporate registration and KYC verification in minutes
+            Complete your registration and get started
           </p>
         </div>
       </div>

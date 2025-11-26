@@ -1,73 +1,229 @@
-# React + TypeScript + Vite
+# Chizo's React Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React template with authentication, routing, admin dashboard, and public-facing pages, built with TypeScript, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth)
+- **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics
+- **Public Pages**: Landing page with hero section, features, API documentation, and contact forms
+- **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components
+- **TypeScript**: Full type safety throughout the application
+- **Modern Tooling**: Vite for fast development, ESLint for code quality, and pnpm for package management
+- **Routing**: Client-side routing with React Router, including nested routes and protected access
+- **Optional Firebase Integration**: Authentication, database (Firestore), and file storage
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React 18, TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS, Radix UI
+- **Routing**: React Router DOM
+- **State Management**: React Context (for auth)
+- **Backend (Optional)**: Firebase (Auth, Firestore, Storage)
+- **Icons**: Lucide React
+- **Forms**: Custom form components with validation
+- **Notifications**: Sonner for toast notifications
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (version 18 or higher)
+- pnpm (recommended) or npm/yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ChisomoM/c-react-template.git
+   cd c-react-template
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Build for Production
+
+```bash
+pnpm build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Preview Production Build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm preview
 ```
+
+### Linting
+
+```bash
+pnpm lint
+```
+
+## Project Structure
+
+```
+src/
+├── (admin)/
+│   └── merchant/
+│       ├── LoginPage.tsx          # Admin login page
+│       └── merchantDashboard.tsx  # Admin dashboard (renamed to AdminDashboard)
+├── (public)/
+│   └── home/
+│       ├── home.tsx               # Public home page
+│       └── components/            # Home page components (hero, features, etc.)
+├── components/
+│   ├── ui/                        # Reusable UI components (buttons, cards, etc.)
+│   ├── auth/                      # Authentication components
+│   ├── footer.tsx                 # Site footer
+│   ├── navbar.tsx                 # Navigation bar
+│   └── ...
+├── layouts/
+│   ├── AdminLayout.tsx            # Layout for admin pages
+│   └── MainLayout.tsx             # Layout for public pages
+├── lib/
+│   ├── context/                   # React contexts (auth, etc.)
+│   ├── api/                       # API utilities and endpoints
+│   └── utils.ts                   # Utility functions
+├── types/
+│   └── auth.ts                    # TypeScript type definitions
+└── assets/                        # Static assets (logos, images)
+```
+
+## Key Components
+
+### Authentication
+- **AuthContext**: Manages user authentication state
+- **ProtectedRoute**: Wraps routes that require authentication
+- **LoginForm**: Handles user login with email/password
+
+### Routing
+- Public routes: `/` (home), `/login`
+- Admin routes: `/admin/dashboard` (protected)
+
+### UI Components
+- Built with Radix UI primitives for accessibility
+- Custom components for forms, navigation, and layouts
+- Responsive design with Tailwind CSS
+
+## Customization
+
+### Adding New Pages
+1. Create your component in the appropriate folder (`(public)` or `(admin)`)
+2. Add the route to `App.tsx`
+3. Use `ProtectedRoute` if authentication is required
+
+### Styling
+- Modify `tailwind.config.js` for custom themes
+- Update component classes directly or use CSS modules
+- Global styles in `src/index.css`
+
+### API Integration
+- Update endpoints in `src/lib/api/end_points.tsx`
+- Modify API calls in `src/lib/api/crud.tsx`
+- Adjust authentication logic in `src/lib/context/auth.tsx`
+- **Optional**: Use Firebase for backend services (see Firebase Integration section)
+
+## Firebase Integration (Optional)
+
+This template includes optional Firebase integration for authentication, database, and storage. Firebase is not required and can be easily removed.
+
+### Setup Firebase
+
+1. Create a Firebase project at [https://console.firebase.google.com/](https://console.firebase.google.com/)
+2. Enable Authentication, Firestore, and Storage as needed
+3. Get your Firebase config from Project Settings
+
+### Environment Variables
+
+Add to your `.env` file:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+### Using Firebase Auth
+
+```tsx
+import { signInWithFirebase, signUpWithFirebase, signOutFromFirebase } from '@/lib/firebase';
+
+const handleLogin = async () => {
+  try {
+    const user = await signInWithFirebase(email, password);
+    console.log('Logged in:', user);
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+};
+```
+
+### Using Firestore
+
+```tsx
+import { FirebaseFirestore } from '@/lib/firebase';
+
+const getUsers = async () => {
+  const users = await FirebaseFirestore.getCollection('users');
+  console.log(users);
+};
+
+const addUser = async () => {
+  const userId = await FirebaseFirestore.addDocument('users', {
+    name: 'John Doe',
+    email: 'john@example.com'
+  });
+  console.log('Added user with ID:', userId);
+};
+```
+
+### Using Storage
+
+```tsx
+import { FirebaseStorage } from '@/lib/firebase';
+
+const uploadFile = async (file: File) => {
+  const downloadURL = await FirebaseStorage.uploadFile(`uploads/${file.name}`, file);
+  console.log('File uploaded:', downloadURL);
+};
+```
+
+### Removing Firebase
+
+To remove Firebase integration:
+
+1. Delete the `src/lib/firebase/` directory
+2. Delete `src/lib/auth/firebaseAuth.ts`
+3. Remove `firebase` from `package.json`
+4. Remove Firebase environment variables from `.env`
+5. Remove any Firebase imports from your components
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a pull request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For questions or issues, please open an issue on GitHub or contact the maintainers.
