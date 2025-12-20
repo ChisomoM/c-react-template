@@ -1,118 +1,180 @@
-import { ArrowRight, Zap, Phone, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Users, Award } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 
 export default function Hero(){
+    const highlights = [
+        { icon: Shield, text: "Legal Protection" },
+        { icon: TrendingUp, text: "Investment Opportunities" },
+        { icon: Award, text: "Professional Growth" }
+    ];
+
     return(
-        <div>      <section className="relative bg-gradient-to-br from-orange-50 via-white to-blue-50 overflow-hidden min-h-[90vh] flex items-center">
-  {/* Animated Background Elements */}
-  <div className="absolute inset-0 overflow-hidden">
-    <motion.div 
-      animate={{y: [0, -20, 0], rotate: [0, 5, 0]}}
-      transition={{duration: 8, repeat: Infinity, ease: "easeInOut"}}
-      className="absolute top-20 left-10 w-32 h-32 bg-orange-200 rounded-full opacity-20 blur-xl">
-    </motion.div>
-    <motion.div 
-      animate={{x: [0, 20, 0], y: [0, -15, 0]}}
-      transition={{duration: 10, repeat: Infinity, ease: "easeInOut"}}
-      className="absolute top-40 right-20 w-40 h-40 bg-blue-200 rounded-full opacity-15 blur-xl">
-    </motion.div>
-    <motion.div 
-      animate={{scale: [1, 1.2, 1]}}
-      transition={{duration: 6, repeat: Infinity, ease: "easeInOut"}}
-      className="absolute bottom-32 left-1/4 w-24 h-24 bg-orange-300 rounded-full opacity-10 blur-xl">
-    </motion.div>
-  </div>
+        <div className="">      
+          <section className="relative bg-[url('/bg-t.png')] bg-cover bg-right overflow-hidden min-h-[90vh] flex items-center">
+            {/* Enhanced Overlay with Gradient */}
+            <div className='absolute inset-0 bg-gradient-to-r from-black/85  to-black/0'>
+                {/* Animated Gradient Orbs */}
+                <motion.div
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                    className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#F15A29]/20 rounded-full blur-3xl"
+                ></motion.div>
+                <motion.div
+                    animate={{
+                        scale: [1, 1.3, 1],
+                        opacity: [0.2, 0.4, 0.2]
+                    }}
+                    transition={{
+                        duration: 10,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 2
+                    }}
+                    className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#172E70]/20 rounded-full blur-3xl"
+                ></motion.div>
+            </div>
 
-  <div className="relative max-w-[1366px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full">
-    {/* Main Grid Layout - Left (Content) & Right (Interactive Panel) */}
-    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      
-      {/* LEFT SIDE - Messaging & Value Proposition */}
-      <motion.div 
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-left space-y-6">
-        
-        {/* Trust Badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="inline-flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-orange-100">
-          <ShieldCheck className="w-4 h-4 text-orange-500" />
-          <span className="text-sm font-medium text-gray-700">Secure and reliable payment gateway</span>
-        </motion.div>
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    {/* Left Column - Main Content */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="text-left space-y-8 pt-12 lg:pt-0"
+                    >                       
 
-        {/* Main Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary-blue leading-tight">
-          Simplifying the Way
-          <span className="text-orange-500 block mt-2">Businesses Transact</span>
-        </h1>
-        
-        {/* Subheadline */}
-        <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-xl">
-       Reach customers around the world with our secure payment gateway. Accept online payments in ZMW, 
-       USD, or any currency via mobile money, bank transfers, and cards—all in one seamless system.        </p>
+                        {/* Main Headline */}
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.3 }}
+                            className="text-4xl sm:text-5xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight"
+                        >
+                            EMPOWERING{' '}
+                            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-[#F15A29] via-orange-400 to-[#F15A29]">
+                                ZAMBIA'S TEACHERS
+                            </span>
+                        </motion.h1>
 
-        {/* Key Benefits */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Instant Processing</h3>
-              <p className="text-sm text-gray-600">Payments processed in seconds</p>
-            </div>
-          </div>
+                        {/* Subheadline */}
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="text-lg text-gray-200 leading-relaxed max-w-2xl"
+                        >
+                            ZUTE empowers educators through advocacy, professional development, and economic opportunities through
+                            our cooperative, ECOS. Together, we're building a stronger teaching profession.
+                        </motion.p>
 
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">100% Secure</h3>
-              <p className="text-sm text-gray-600">Bank-grade encryption</p>
-            </div>
-          </div>
+                        {/* Highlights */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.5 }}
+                            className="flex flex-wrap gap-4"
+                        >
+                            {highlights.map((highlight, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+                                    className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-2 py-2 rounded-full border border-white/20"
+                                >
+                                    <highlight.icon className="text-[#F15A29]" size={16} />
+                                    <span className="text-white font-medium text-[12px]">{highlight.text}</span>
+                                </motion.div>
+                            ))}
+                        </motion.div>
 
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Phone className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">24/7 Available</h3>
-              <p className="text-sm text-gray-600">Pay anytime, anywhere</p>
-            </div>
-          </div>
+                        {/* CTA Buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.7 }}
+                            className="flex flex-col sm:flex-row gap-4 pt-4"
+                        >
+                            <Link to="/join" className="group">
+                                <Button 
+                                    size="sm"
+                                    className="w-full sm:w-auto bg-gradient-to-r from-[#F15A29] to-[#d94c1e] hover:from-[#d94c1e] hover:to-[#c4431a] text-white font-bold px-10 py-7 text-lg rounded-full shadow-lg hover:shadow-orange-500/50 transition-all duration-300"
+                                >
+                                    Become a Member
+                                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-[#172E70] font-semibold px-10 py-7 text-lg rounded-full transition-all duration-300 bg-transparent backdrop-blur-sm"
+                            >
+                                Contact Us
+                            </Button>
+                        </motion.div>
 
-          {/* <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-purple-600" />
+                        {/* Trust Indicators
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.8, delay: 0.9 }}
+                            className="flex items-center gap-6 pt-8 text-gray-300"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Users size={20} />
+                                <span className="text-sm font-medium">5,000+ Members</span>
+                            </div>
+                            <div className="w-px h-6 bg-white/30"></div>
+                            <div className="flex items-center gap-2">
+                                <Shield size={20} />
+                                <span className="text-sm font-medium">95% Success Rate</span>
+                            </div>
+                        </motion.div> */}
+                    </motion.div>
+
+                    {/* Right Column - Stats Cards
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        className="hidden lg:grid grid-cols-2 gap-6"
+                    >
+                        {[
+                            { number: "5,000+", label: "Active Members", icon: Users, gradient: "from-purple-500 to-purple-700" },
+                            { number: "15%+", label: "ROI Growth", icon: TrendingUp, gradient: "from-orange-500 to-red-600" },
+                            { number: "95%", label: "Success Rate", icon: Shield, gradient: "from-blue-600 to-blue-800" },
+                            { number: "24/7", label: "Support", icon: Award, gradient: "from-green-500 to-green-700" }
+                        ].map((stat, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                                whileHover={{ scale: 1.05, y: -5 }}
+                                className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300"
+                            >
+                                <div className={`w-14 h-14 bg-gradient-to-br ${stat.gradient} rounded-2xl flex items-center justify-center mb-4`}>
+                                    <stat.icon className="text-white" size={28} />
+                                </div>
+                                <div className="text-4xl font-bold text-white mb-2">{stat.number}</div>
+                                <div className="text-gray-300 font-medium">{stat.label}</div>
+                            </motion.div>
+                        ))}
+                    </motion.div> */}
+                </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">All Networks</h3>
-              <p className="text-sm text-gray-600">MTN, Airtel, Zamtel & more</p>
-            </div>
-          </div> */}
+          </section>
         </div>
-
-        {/* CTA for Business Users (Secondary audience) */}
-        <div className="pt-6">
-          <p className="text-sm text-gray-600 mb-3">Building a business solution?</p>
-          <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
-            Explore Our API
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-        </div>
-      </motion.div>
-
-   
-    </div>
-  </div>
-</section></div>
     )
 }

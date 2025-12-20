@@ -1,177 +1,122 @@
-// import { Button } from './ui/button';
-// import { Input } from './ui/input';
-import { Separator } from './ui/separator';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
-  Instagram,
-  ArrowRight
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Facebook, MessageCircle } from "lucide-react";
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
-
-  const footerLinks = {
-    'Platform': [
-      { label: 'API Documentation', href: '#docs' },
-    //   { label: 'SDKs & Libraries', href: '#sdks' },
-      { label: 'Integration Guide', href: '#guide' },
-    //   { label: 'Rate Limits', href: '#limits' },
-    //   { label: 'Status Page', href: '#status' }
-    ],
-    'Services': [
-      { label: 'Airtime Top-up', href: '#airtime' },
-      { label: 'Data Bundles', href: '#data' },
-      { label: 'Bill Payments', href: '#bills' },
-      { label: 'e-toll Payment', href: '#transfer' },
-    //   { label: 'Bulk Operations', href: '#bulk' }
-    ],
-    'Company': [
-      { label: 'Probase', href: 'https://pbsdemo.probasegroup.com' },
-    //   { label: 'Our Team', href: '#team' },
-    //   { label: 'Careers', href: '#careers' },
-    //   { label: 'Press Kit', href: '#press' },
-    //   { label: 'Contact', href: '#contact' }
-    ],
-    // 'Resources': [
-    //   { label: 'Blog', href: '#blog' },
-    //   { label: 'Case Studies', href: '#cases' },
-    //   { label: 'Help Center', href: '#help' },
-    //   { label: 'Community', href: '#community' },
-    //   { label: 'Webinars', href: '#webinars' }
-    // ],
-    'Legal': [
-      { label: 'Privacy Policy', href: '#privacy' },
-      { label: 'Terms of Service', href: '#terms' },
-      { label: 'Cookie Policy', href: '#cookies' },
-    //   { label: 'Compliance', href: '#compliance' },
-    //   { label: 'Security', href: '#security' }
-    ]
-  };
-
+export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      {/* Newsletter Section
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
-              <p className="text-orange-100">
-                Get the latest updates on new features, partnerships, and industry insights.
-              </p>
+    <footer className="bg-gradient-to-br from-[#002C6B] via-[#002C6B] to-[#530075] text-white relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#F14600]/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          {/* Logo & About */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#F14600] to-[#F14600]/80 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold">ZUTE</span>
+              </div>
+              <div>
+                <div className="text-white font-bold">ZUTE</div>
+                <div className="text-xs text-white/70">Teachers Empowerment</div>
+              </div>
             </div>
-            <div className="flex space-x-4">
-              <Input 
-                type="email" 
-                placeholder="Enter your email"
-                className="bg-white text-gray-900 border-0 flex-1"
-              />
-              <Button variant="secondary" className="bg-white text-orange-600 hover:bg-gray-50 px-6">
-                Subscribe
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
+            <p className="text-white/80 text-sm leading-relaxed">
+              Empowering teachers across Zambia through advocacy, welfare, and professional development.
+            </p>
           </div>
-        </div>
-      </div> */}
 
-      {/* Main Footer Content */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-      >
-        <div className="grid lg:grid-cols-6 gap-8">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold">
-                Smart<span className="text-orange-500">Hub</span>
-              </h2>
-              <p className="text-gray-400 mt-2">
-                Empowering businesses and individuals across Africa with seamless payment 
-                infrastructure and reliable financial services.
-              </p>
-            </div>
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-white mb-4 font-bold">Quick Links</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#about" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  About ZUTE
+                </a>
+              </li>
+              <li>
+                <a href="#programs" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  Programs
+                </a>
+              </li>
+              <li>
+                <a href="#membership" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  Membership
+                </a>
+              </li>
+              <li>
+                <a href="#contact" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
 
-            {/* Contact Info */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">info@probasegroup.com</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">+260 976 360 360</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">Plot 2374 Kelvin Siwale Rd, Lusaka, Zambia</span>
-              </div>
-            </div>
+          {/* Resources */}
+          <div>
+            <h4 className="text-white mb-4 font-bold">Resources</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  Member Portal
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  FAQs
+                </a>
+              </li>
+              <li>
+                <a href="#news" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  News & Updates
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-white/80 hover:text-[#F14600] transition-colors text-sm">
+                  Privacy Policy
+                </a>
+              </li>
+            </ul>
+          </div>
 
-            {/* Social Links
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
+          {/* Social Media */}
+          <div>
+            <h4 className="text-white mb-4 font-bold">Connect With Us</h4>
+            <div className="flex gap-3 mb-4">
+              <a 
+                href="#" 
+                className="w-11 h-11 bg-white/10 hover:bg-[#F14600] backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a 
+                href="#" 
+                className="w-11 h-11 bg-white/10 hover:bg-[#F14600] backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+              >
+                <MessageCircle className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div> */}
-          </div>
+              <a 
+                href="#" 
+                className="w-11 h-11 bg-white/10 hover:bg-[#F14600] backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+              >
 
-          {/* Footer Links */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="font-semibold text-white mb-4">{category}</h3>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a 
-                      href={link.href}
-                      className="text-gray-400 hover:text-orange-500 transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              </a>
             </div>
-          ))}
+            <p className="text-white/80 text-sm">
+              Follow us for updates and announcements
+            </p>
+          </div>
         </div>
 
-        <Separator className="my-8 bg-gray-800" />
-
-        {/* Bottom Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <div className="text-gray-400 text-sm">
-            © {currentYear} Probase Group. All rights reserved.
-          </div>
-          
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-gray-400">All systems operational</span>
-            </div>
-           
+        <div className="border-t border-white/10 pt-8 mt-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/70">
+            <p>© 2025 ZUTE. All Rights Reserved.</p>
+            <p>
+              Designed & Developed by <span className="text-[#F14600]">Chisomo Mutale</span> | ZUTE Innovation Initiative
+            </p>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 }

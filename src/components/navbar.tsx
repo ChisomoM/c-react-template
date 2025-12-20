@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
@@ -6,22 +6,41 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar(){
     const [isOpen, setIsOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     
     const navItems = [
-        {name: 'Home', href: '#home'},
-        {name: 'API', href: '#api'},
-        {name: 'Features', href: '#features'},
-        // {name: 'About', href: '#about'},
-        // {name: 'Contact', href: '#contact'}
+        {name: 'Home', href: '/'},
+        // {name: 'About Us', href: '/#about'},
+        {name: 'Membership', href: '/join'},
+        {name: 'Contact', href: '/contact'},
     ];
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     // Active state highlighting can be added later (e.g., via IntersectionObserver)
 
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault();
-        const element = document.querySelector(href);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+        if (href.startsWith('/')) {
+            navigate(href);
+        } else {
+            // Handle ID selectors (with or without #)
+            const selector = href.startsWith('#') ? href : `#${href}`;
+            const element = document.querySelector(selector);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         setIsOpen(false);
     };
@@ -34,15 +53,17 @@ export default function Navbar(){
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white shadow-sm fixed w-full top-0 z-50"
+            className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+                isScrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
+            }`}
         >
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <a href="/" className="flex-shrink-0">
-                        <img 
-                            src="/logos/Probase Logo grad n blue.svg"
-                            alt="SmartHub Logo"
+                    <a href="/" className="flex-shrink-0 justify-start grid grid-cols-2">
+                        <img
+                            src={isScrolled ? "/logos/blue-logo-8.png" : "/logos/White-logo-8.png"}
+                            alt="ZUTE Logo"
                             className="h-12 w-auto object-contain"
                         />
                     </a>
@@ -53,9 +74,9 @@ export default function Navbar(){
                             <a 
                                 key={item.name}
                                 href={item.href}
-                                className={
-                                    'px-3 py-2 text-sm font-medium transition-colors duration-200 text-gray-700 hover:text-primary-orange hover:bg-gray-50'
-                                }
+                                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-primary-orange ${
+                                    isScrolled ? "text-gray-800" : "text-white"
+                                }`}
                                 onClick={(e) => handleNavClick(e, item.href)}
                             >
                                 {item.name}
@@ -91,7 +112,7 @@ export default function Navbar(){
                 {/* Mobile Navigation Menu */}
                 {isOpen && (
                     <div className="md:hidden">
-                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 bg-white rounded-b-lg shadow-lg">
                             {navItems.map((item) => (
                                 <a
                                     key={item.name}

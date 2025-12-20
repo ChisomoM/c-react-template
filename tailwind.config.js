@@ -8,11 +8,11 @@ export default {
     extend: {
       colors: {
         primary: {
-          blue: '#212A48',
-          orange: '#E5600B',
+
+          orange: '#F15A29',
         },
         secondary: {
-          orange : '#D70F0E'
+          orange : '#172E70'
         },
         gradient: {
           from: '#D70F0E',
@@ -29,18 +29,24 @@ export default {
           ring: 'hsl(var(--sidebar-ring))',
         }
       },
+      
       fontFamily: {
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
         'myriad': ['Myriad Pro', 'system-ui', 'sans-serif'],
         'montserrat': ['Montserrat', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
         'outfit': ['Outfit', 'system-ui', 'sans-serif'],
         'poppins': ['Poppins', 'system-ui', 'sans-serif'],
         'space-grotesk': ['Space Grotesk', 'system-ui', 'monospace'],
       },
-      backgroundImage: {
-        'orange-gradient': 'linear-gradient(to right, #D70F0E 0%, #E5600B 70%)',
-      },
+      // backgroundImage: {
+      //   'orange-gradient': 'linear-gradient(to right, #D70F0E 0%, #E5600B 70%)',
+      // },
       fontSize: {
-        'hero-title': '92px',
+        // Make text-6xl map to 56px with a sensible default line-height
+        // so you can use `text-6xl` across the project.
+        // Backwards-compatible alias if you prefer `text-titles`
+        'titles': ['56px', { lineHeight: '1' }],
+        'hero-title': ['56px', { lineHeight: '1.05' }],
         'hero-subtitle': '16px',
         'stats-number': '36px',
         'stats-label': '20px',

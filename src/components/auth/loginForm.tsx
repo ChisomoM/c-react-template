@@ -4,8 +4,6 @@ import { Eye, EyeClosed, Loader2, Building2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-// import Logo from '../../assets/logos/U-KYC-logo-stacked.svg?react';
-// import Logo from '../logos/Probase Logo grad n blue.svg?react';
 // import { ForgotPasswordModal } from "./forgotPasswordModal";
 
 
@@ -51,13 +49,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSignUpClick }) => {
     <div className="w-full max-w-md mx-auto">
       <div className="bg-white rounded-2xl shadow-xl p-6 space-y-4 border border-gray-100">
         <div className="space-y-1">
-          {/* <Logo className="h-20 w-auto mx-auto transform hover:scale-105 transition-transform duration-300 "/> */}
-        <img
-          src="/logos/Probase Logo grad n blue.svg"
-          alt="Probase Logo"
-className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform duration-300 "
-        ></img>
-        
+          {/* Logo removed */}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -1,3 +1,5 @@
+import type { UserRole } from '@/lib/constants';
+
 /**
  * Auth Types - Adapted to the new login response shape used by the API.
  * New login response example:
@@ -47,9 +49,12 @@ export interface AuthUser extends Partial<LoginUser> {
   // convenience normalized names
   firstName?: string;
   lastName?: string;
-  role?: string;
+  role?: UserRole;
   isVerified?: boolean;
   isActive?: boolean;
+  myReferralCode?: string;
+  permissions?: string[];
+  assignedRegions?: string[]; // For Regional Admin / Operations
 }
 
 // API Response structure for the new login
