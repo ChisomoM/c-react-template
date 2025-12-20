@@ -22,6 +22,11 @@ export default function Home(){
 
             
            
+            <Hero/>
+
+
+            
+           
             <Footer/>
         </div>
         
