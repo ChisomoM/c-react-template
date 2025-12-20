@@ -7,6 +7,7 @@ A modern React template with authentication, routing, admin dashboard, and publi
 - **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth)
 - **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics
 - **Public Pages**: Landing page with hero section, features, API documentation, and contact forms
+- **SEO Optimization**: Generic SEO component for managing meta tags, Open Graph, and Twitter Cards
 - **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components
 - **TypeScript**: Full type safety throughout the application
 - **Modern Tooling**: Vite for fast development, ESLint for code quality, and pnpm for package management
@@ -115,6 +116,48 @@ src/
 - Built with Radix UI primitives for accessibility
 - Custom components for forms, navigation, and layouts
 - Responsive design with Tailwind CSS
+
+### SEO Component
+
+The template includes a generic SEO component for managing meta tags, Open Graph, and Twitter Cards. It's built using `react-helmet-async` for dynamic document head management.
+
+**Usage:**
+
+```tsx
+import SEO from '../components/SEO';
+
+function MyPage() {
+  return (
+    <>
+      <SEO
+        title="Page Title"
+        description="Page description for search engines"
+        keywords="keyword1, keyword2, keyword3"
+        image="https://example.com/image.jpg"
+        url="https://example.com/page"
+        type="website"
+        siteName="Your Site Name"
+        twitterCard="summary_large_image"
+        canonical="https://example.com/page"
+      />
+      {/* Your page content */}
+    </>
+  );
+}
+```
+
+**Props:**
+
+- `title`: Page title (defaults to "Default Title")
+- `description`: Meta description
+- `keywords`: Comma-separated keywords
+- `image`: URL for Open Graph/Twitter image
+- `url`: Canonical URL (defaults to current URL)
+- `type`: Open Graph type (defaults to "website")
+- `siteName`: Site name for Open Graph
+- `twitterCard`: Twitter card type (defaults to "summary_large_image")
+- `canonical`: Canonical URL
+- `children`: Additional head elements
 
 ## Customization
 
