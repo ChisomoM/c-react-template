@@ -1,5 +1,8 @@
+'use client'
+
+import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/useAuth';
 import type { AccountType } from '@/types/auth';
 
@@ -15,15 +18,36 @@ export function ProtectedRoute({
   fallback,
 }: ProtectedRouteProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && (!isAuthenticated || !user)) {
+      router.push('/login');
+    }
+  }, [isLoading, isAuthenticated, user, router]);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user && requiredAccountType) {
+      const requiredTypes = Array.isArray(requiredAccountType)
+        ? requiredAccountType
+        : [requiredAccountType];
+
+      const effectiveAccountType: AccountType = user.accountType ?? 'admin';
+
+      if (!requiredTypes.includes(effectiveAccountType)) {
+        router.push('/unauthorized');
+      }
+    }
+  }, [isLoading, isAuthenticated, user, requiredAccountType, router]);
 
   // Still loading auth state - show fallback
   if (isLoading) {
     return fallback || <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  // Not authenticated - redirect to login
+  // Not authenticated - show fallback (redirection handled in useEffect)
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return fallback || <div className="flex items-center justify-center min-h-screen">Redirecting...</div>;
   }
 
   // Check if user has required account type
@@ -31,13 +55,10 @@ export function ProtectedRoute({
     const requiredTypes = Array.isArray(requiredAccountType)
       ? requiredAccountType
       : [requiredAccountType];
-
-    // Determine effective account type from new user shape.
-    // Prefer explicit `accountType` if present; otherwise infer from `is_superUser`.
-    const effectiveAccountType: AccountType = user.accountType ?? 'admin'; // (user.is_superUser ? 'system_admin' : 'merchant');
+    const effectiveAccountType: AccountType = user.accountType ?? 'admin';
 
     if (!requiredTypes.includes(effectiveAccountType)) {
-      return <Navigate to="/unauthorized" replace />;
+       return fallback || <div className="flex items-center justify-center min-h-screen">Redirecting...</div>;
     }
   }
 

@@ -1,27 +1,30 @@
-# Chizo's React Template
+# React Template
 
-A modern React template with authentication, routing, admin dashboard, and public-facing pages, built with TypeScript, Vite, and Tailwind CSS.
+A modern, full-featured React template with authentication, admin dashboard, public pages, and a complete backend API. Built with Next.js 16, TypeScript, Tailwind CSS, and Radix UI components.
 
 ## Features
 
 - **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth)
 - **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics
 - **Public Pages**: Landing page with hero section, features, API documentation, and contact forms
+- **Backend API**: Complete REST API with authentication, CRUD operations, and middleware
 - **SEO Optimization**: Generic SEO component for managing meta tags, Open Graph, and Twitter Cards
 - **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components
 - **TypeScript**: Full type safety throughout the application
-- **Modern Tooling**: Vite for fast development, ESLint for code quality, and pnpm for package management
-- **Routing**: Client-side routing with React Router, including nested routes and protected access
+- **Modern Tooling**: Next.js for full-stack development, ESLint for code quality, and pnpm for package management
+- **Routing**: Next.js App Router with API routes and client-side navigation
 - **Optional Firebase Integration**: Authentication, database (Firestore), and file storage
 
 ## Tech Stack
 
-- **Frontend**: React 18, TypeScript
-- **Build Tool**: Vite
+- **Frontend**: React 19, TypeScript
+- **Backend**: Next.js API Routes
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS, Radix UI
-- **Routing**: React Router DOM
+- **Routing**: Next.js App Router
 - **State Management**: React Context (for auth)
-- **Backend (Optional)**: Firebase (Auth, Firestore, Storage)
+- **Authentication**: JWT tokens
+- **Database**: In-memory storage (template - replace with PostgreSQL, MongoDB, etc.)
 - **Icons**: Lucide React
 - **Forms**: Custom form components with validation
 - **Notifications**: Sonner for toast notifications
@@ -51,7 +54,7 @@ A modern React template with authentication, routing, admin dashboard, and publi
    pnpm dev
    ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+4. Open your browser and navigate to `http://localhost:3000`
 
 ### Build for Production
 
@@ -62,7 +65,7 @@ pnpm build
 ### Preview Production Build
 
 ```bash
-pnpm preview
+pnpm start
 ```
 
 ### Linting
@@ -75,29 +78,35 @@ pnpm lint
 
 ```
 src/
-├── (admin)/
-│   └── merchant/
-│       ├── LoginPage.tsx          # Admin login page
-│       └── merchantDashboard.tsx  # Admin dashboard (renamed to AdminDashboard)
-├── (public)/
-│   └── home/
-│       ├── home.tsx               # Public home page
-│       └── components/            # Home page components (hero, features, etc.)
+├── app/
+│   ├── layout.tsx                 # Root layout with AuthProvider and Toaster
+│   ├── globals.css                # Global styles
+│   ├── (public)/                  # Public pages route group
+│   │   ├── layout.tsx             # MainLayout (Navbar + Footer)
+│   │   ├── page.tsx               # Home page
+│   │   └── home/
+│   │       └── components/        # Home page components
+│   ├── login/
+│   │   └── page.tsx               # Login page
+│   └── (admin)/                   # Admin pages route group
+│       ├── layout.tsx             # AdminLayout with ProtectedRoute
+│       └── admin/
+│           ├── dashboard/
+│           │   └── page.tsx       # Admin dashboard
+│           └── LoginPage.tsx      # Login page component
 ├── components/
-│   ├── ui/                        # Reusable UI components (buttons, cards, etc.)
+│   ├── ui/                        # Reusable UI components
 │   ├── auth/                      # Authentication components
 │   ├── footer.tsx                 # Site footer
 │   ├── navbar.tsx                 # Navigation bar
 │   └── ...
-├── layouts/
-│   ├── AdminLayout.tsx            # Layout for admin pages
-│   └── MainLayout.tsx             # Layout for public pages
+├── layouts/                       # Legacy layouts (can be removed)
 ├── lib/
-│   ├── context/                   # React contexts (auth, etc.)
-│   ├── api/                       # API utilities and endpoints
+│   ├── context/                   # React contexts
+│   ├── api/                       # API utilities
 │   └── utils.ts                   # Utility functions
 ├── types/
-│   └── auth.ts                    # TypeScript type definitions
+│   └── auth.ts                    # TypeScript types
 └── assets/                        # Static assets (logos, images)
 ```
 
@@ -158,6 +167,47 @@ function MyPage() {
 - `twitterCard`: Twitter card type (defaults to "summary_large_image")
 - `canonical`: Canonical URL
 - `children`: Additional head elements
+
+## Backend API
+
+This template includes a complete REST API built with Next.js API routes. The API provides authentication, user management, and CRUD operations for items.
+
+### API Endpoints
+
+#### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/profile` - Get user profile (protected)
+
+#### Items (CRUD)
+- `GET /api/items` - Get all user's items (protected)
+- `POST /api/items` - Create new item (protected)
+- `GET /api/items/[id]` - Get single item (protected)
+- `PUT /api/items/[id]` - Update item (protected)
+- `DELETE /api/items/[id]` - Delete item (protected)
+
+#### Health Check
+- `GET /api/health` - API health status
+
+### API Documentation
+
+See `API_DOCUMENTATION.md` for detailed API documentation with examples.
+
+### Database
+
+The template uses in-memory storage for demonstration. For production:
+
+1. **Choose a Database**: PostgreSQL, MongoDB, MySQL, etc.
+2. **Install Database Library**: `pnpm add prisma` or `pnpm add mongoose`
+3. **Update Database Connection**: Replace in-memory storage in `src/lib/database.ts`
+4. **Migrate Data Models**: Update User and Item interfaces
+
+### Environment Variables
+
+Add to your `.env` file:
+```env
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+```
 
 ## Customization
 

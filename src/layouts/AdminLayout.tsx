@@ -1,4 +1,7 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+"use client"
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
   SidebarProvider,
@@ -10,12 +13,12 @@ import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react
 import { TopNavBar } from '@/components/TopNavBar';
 import { useAuth } from '@/lib/context/useAuth';
 
-export default function AdminLayout() {
-  const location = useLocation();
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const { logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   const handleLogout = () => {
     logout();
@@ -63,7 +66,7 @@ export default function AdminLayout() {
                       }`}
                       title={isCollapsed ? 'Dashboard' : ''}
                     >
-                      <Link to="/admin/dashboard" className="flex items-center gap-3">
+                      <Link href="/admin/dashboard" className="flex items-center gap-3">
                         <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
                         {!isCollapsed && <span>Dashboard</span>}
                       </Link>
@@ -98,7 +101,7 @@ export default function AdminLayout() {
             }`}
           >
             <main className="p-8 min-h-[calc(100vh-4rem)] max-w-[calc(100vw-18rem)] lg:max-w-[calc(100vw-20rem)]">
-              <Outlet />
+              {children}
             </main>
           </div>
         </SidebarProvider>

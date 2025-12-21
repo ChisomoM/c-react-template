@@ -1,8 +1,10 @@
+'use client'
+
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export default function Navbar(){
     const [isOpen, setIsOpen] = useState(false);
@@ -26,8 +28,8 @@ export default function Navbar(){
         setIsOpen(false);
     };
 
-    const navigate = useNavigate();
-    const onGetStarted = () => navigate("/login")
+    const router = useRouter();
+    const onGetStarted = () => router.push("/login")
 
     return (
         <motion.header 
@@ -40,11 +42,9 @@ export default function Navbar(){
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <a href="/" className="flex-shrink-0">
-                        <img 
-                            src="/logos/Probase Logo grad n blue.svg"
-                            alt="SmartHub Logo"
-                            className="h-12 w-auto object-contain"
-                        />
+                        <div className="text-2xl font-bold">
+                            React<span className="text-orange-500">Template</span>
+                        </div>
                     </a>
 
                     {/* Desktop Navigation */}

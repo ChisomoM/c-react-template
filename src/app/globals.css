@@ -1,0 +1,292 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+      min-width: 320px;
+  min-height: 100vh;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Orange theme colors for SmartHub */
+@layer utilities {
+  .bg-orange-25 {
+    background-color: #fffcf5;
+  }
+  
+  .bg-orange-50 {
+    background-color: #fff7ed;
+  }
+  
+  .bg-orange-100 {
+    background-color: #ffedd5;
+  }
+  
+  .bg-orange-500 {
+    background-color: #f97316;
+  }
+  
+  .bg-orange-600 {
+    background-color: #ea580c;
+  }
+  
+  .text-orange-500 {
+    color: #f97316;
+  }
+  
+  .text-orange-600 {
+    color: #ea580c;
+  }
+  
+  .text-orange-700 {
+    color: #c2410c;
+  }
+  
+  .border-orange-100 {
+    border-color: #ffedd5;
+  }
+  
+  .border-orange-200 {
+    border-color: #fed7aa;
+  }
+  
+  .border-orange-300 {
+    border-color: #fdba74;
+  }
+  
+  .border-orange-500 {
+    border-color: #f97316;
+  }
+  
+  .hover\:bg-orange-50:hover {
+    background-color: #fff7ed;
+  }
+  
+  .hover\:bg-orange-100:hover {
+    background-color: #ffedd5;
+  }
+  
+  .hover\:bg-orange-600:hover {
+    background-color: #ea580c;
+  }
+  
+  .hover\:text-orange-500:hover {
+    color: #f97316;
+  }
+  
+  .hover\:border-orange-200:hover {
+    border-color: #fed7aa;
+  }
+  
+  .hover\:border-orange-300:hover {
+    border-color: #fdba74;
+  }
+  
+  .ring-orange-200 {
+    --tw-ring-color: #fed7aa;
+  }
+}
+
+/* Trusted logos marquee styles */
+.marquee {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* pause on hover for easier inspection */
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* helper to make images slightly muted by default (Tailwind utilities used in component too) */
+.trusted-logo-muted {
+  filter: grayscale(100%);
+  transition: filter 200ms ease-in-out, opacity 200ms ease-in-out;
+}
+
+.trusted-logo-muted:hover {
+  filter: none;
+}
+
+/* react-horizontal-scrolling-menu custom styles */
+.trusted-scroll-menu .scroll-wrapper {
+  width: 100%;
+}
+
+.trusted-scroll-menu .scroll-container {
+  display: flex;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.trusted-scroll-menu .scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.trusted-scroll-menu .react-horizontal-scrolling-menu--scroll-container {
+  overflow: hidden;
+}
+
+.trusted-scroll-menu .react-horizontal-scrolling-menu--wrapper {
+  position: relative;
+}

@@ -1,10 +1,12 @@
+'use client'
+
 import type { ReactNode } from 'react';
 import {
   useState,
   useEffect,
   useCallback,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { post } from '../api/crud';
 import type {
@@ -22,7 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const clearStorage = useCallback(() => {
     try {
@@ -126,7 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Auto-redirect based on detected account type
         // const redirectPath = authUser.accountType === 'system_admin' ? '/admin/dashboard' : '/merchant/dashboard';
         const redirectPath = '/admin/dashboard';
-        navigate(redirectPath);
+        router.push(redirectPath);
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Login failed';
         setError(errorMsg);
@@ -136,7 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [saveToStorage, navigate, deriveUserFromResponse]
+    [saveToStorage, router, deriveUserFromResponse]
   );
 
   /**
@@ -151,13 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       // Redirect to login
-      navigate('/login');
+      router.push('/login');
       toast.success('Logged out successfully');
     } catch (err) {
       console.error('Logout error:', err);
       toast.error('Logout failed');
     }
-  }, [clearStorage, navigate]);
+  }, [clearStorage, router]);
 
 
   useEffect(() => {

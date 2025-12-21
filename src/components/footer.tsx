@@ -1,13 +1,15 @@
+'use client'
+
 // import { Button } from './ui/button';
 // import { Input } from './ui/input';
 import { Separator } from './ui/separator';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
   Instagram,
   ArrowRight
 } from 'lucide-react';
@@ -18,39 +20,25 @@ export function Footer() {
 
   const footerLinks = {
     'Platform': [
-      { label: 'API Documentation', href: '#docs' },
-    //   { label: 'SDKs & Libraries', href: '#sdks' },
-      { label: 'Integration Guide', href: '#guide' },
-    //   { label: 'Rate Limits', href: '#limits' },
-    //   { label: 'Status Page', href: '#status' }
+      { label: 'Documentation', href: '#docs' },
+      { label: 'API Reference', href: '#api' },
+      { label: 'Getting Started', href: '#guide' },
     ],
-    'Services': [
-      { label: 'Airtime Top-up', href: '#airtime' },
-      { label: 'Data Bundles', href: '#data' },
-      { label: 'Bill Payments', href: '#bills' },
-      { label: 'e-toll Payment', href: '#transfer' },
-    //   { label: 'Bulk Operations', href: '#bulk' }
+    'Features': [
+      { label: 'Authentication', href: '#auth' },
+      { label: 'Dashboard', href: '#dashboard' },
+      { label: 'Components', href: '#components' },
+      { label: 'Themes', href: '#themes' },
     ],
-    'Company': [
-      { label: 'Probase', href: 'https://pbsdemo.probasegroup.com' },
-    //   { label: 'Our Team', href: '#team' },
-    //   { label: 'Careers', href: '#careers' },
-    //   { label: 'Press Kit', href: '#press' },
-    //   { label: 'Contact', href: '#contact' }
+    'Resources': [
+      { label: 'Templates', href: '#templates' },
+      { label: 'Examples', href: '#examples' },
+      { label: 'Community', href: '#community' },
     ],
-    // 'Resources': [
-    //   { label: 'Blog', href: '#blog' },
-    //   { label: 'Case Studies', href: '#cases' },
-    //   { label: 'Help Center', href: '#help' },
-    //   { label: 'Community', href: '#community' },
-    //   { label: 'Webinars', href: '#webinars' }
-    // ],
     'Legal': [
       { label: 'Privacy Policy', href: '#privacy' },
       { label: 'Terms of Service', href: '#terms' },
-      { label: 'Cookie Policy', href: '#cookies' },
-    //   { label: 'Compliance', href: '#compliance' },
-    //   { label: 'Security', href: '#security' }
+      { label: 'License', href: '#license' },
     ]
   };
 
@@ -94,11 +82,11 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <h2 className="text-2xl font-bold">
-                Smart<span className="text-orange-500">Hub</span>
+                React<span className="text-orange-500">Template</span>
               </h2>
               <p className="text-gray-400 mt-2">
-                Empowering businesses and individuals across Africa with seamless payment 
-                infrastructure and reliable financial services.
+                A modern React template built with Next.js, TypeScript, and Tailwind CSS.
+                Perfect for building scalable web applications with authentication and responsive design.
               </p>
             </div>
 
@@ -106,15 +94,15 @@ export function Footer() {
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">info@probasegroup.com</span>
+                <span className="text-gray-300">hello@reacttemplate.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">+260 976 360 360</span>
+                <span className="text-gray-300">+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">Plot 2374 Kelvin Siwale Rd, Lusaka, Zambia</span>
+                <span className="text-gray-300">123 Template Street, Web City, WC 12345</span>
               </div>
             </div>
 

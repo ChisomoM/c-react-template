@@ -1,11 +1,14 @@
+'use client'
+
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import  logo  from '../assets/Probase-logo-blue-Text.svg';
+// import  logo  from '../assets/Probase-logo-blue-Text.svg';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -16,7 +19,7 @@ function Navbar() {
     { name: 'Contact', path: '/contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   return (
     <motion.div 
@@ -33,11 +36,11 @@ function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
   <div className="flex items-center">
-    <img 
+    {/* <img 
       src={logo}
       alt="Probase Logo" 
       className="h-8 sm:h-12 md:h-12 w-auto object-contain max-w-[150px] sm:max-w-[180px] md:max-w-[220px]" 
-    />
+    /> */}
   </div>
 </Link>
 
