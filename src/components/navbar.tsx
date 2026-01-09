@@ -10,20 +10,26 @@ export default function Navbar(){
     const [isOpen, setIsOpen] = useState(false);
     
     const navItems = [
-        {name: 'Home', href: '#home'},
-        {name: 'API', href: '#api'},
-        {name: 'Features', href: '#features'},
-        // {name: 'About', href: '#about'},
-        // {name: 'Contact', href: '#contact'}
+        {name: 'Home', href: '/'},
+        {name: 'Shop', href: '/shop'},
+        {name: 'About', href: '/#about'},
     ];
 
     // Active state highlighting can be added later (e.g., via IntersectionObserver)
 
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault();
-        const element = document.querySelector(href);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+        
+        // For hash links, scroll to element
+        if (href.startsWith('#') || href.includes('/#')) {
+            const hash = href.includes('/#') ? href.split('/#')[1] : href.substring(1);
+            const element = document.querySelector(`#${hash}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            // For regular links, navigate
+            router.push(href);
         }
         setIsOpen(false);
     };
@@ -43,7 +49,7 @@ export default function Navbar(){
                     {/* Logo */}
                     <a href="/" className="flex-shrink-0">
                         <div className="text-2xl font-bold">
-                            React<span className="text-orange-500">Template</span>
+                            Zambian<span className="text-orange-500">Shop</span>
                         </div>
                     </a>
 

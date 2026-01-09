@@ -8,12 +8,12 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { post } from '../api/crud';
+import { SupabaseAuthService } from '@/services/SupabaseAuthService';
+import { User } from '@/services/types';
 import type {
   AuthUser,
   AuthTokens,
   AuthContextValue,
-  LoginUser,
 } from '@/types/auth';
 import { STORAGE_KEYS } from '../../types/auth';
 import { AuthContext } from './AuthContext';
@@ -26,6 +26,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const authService = new SupabaseAuthService();
+
   const clearStorage = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEYS.TOKENS);
@@ -35,26 +37,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const convertUserToAuthUser = useCallback((user: User): AuthUser => {
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      role: user.role,
+      accountType: user.role === 'admin' ? 'admin' : 'admin', // adjust as needed
+      isActive: true,
+      isVerified: true,
+    };
+  }, []);
+
  
-  const restoreSessionFromStorage = useCallback(() => {
+  const restoreSessionFromStorage = useCallback(async () => {
     try {
-      const storedTokens = localStorage.getItem(STORAGE_KEYS.TOKENS);
-      const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
-
-      if (storedTokens && storedUser) {
-        const parsedTokens = JSON.parse(storedTokens);
-        const parsedUser = JSON.parse(storedUser);
-
-        setTokens(parsedTokens);
-        setUser(parsedUser);
+      const user = await authService.getUser();
+      if (user) {
+        const authUser = convertUserToAuthUser(user);
+        setUser(authUser);
+        // For Supabase, tokens are handled internally
+        const authTokens: AuthTokens = { token: 'supabase_session' };
+        setTokens(authTokens);
       }
     } catch (err) {
-      console.error('Failed to restore session from storage:', err);
+      console.error('Failed to restore session:', err);
       clearStorage();
     } finally {
       setIsLoading(false);
     }
-  }, [clearStorage]);
+  }, [authService, convertUserToAuthUser, clearStorage]);
 
   /**
    * Persist auth state to localStorage
@@ -73,49 +86,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
    
-  // New API only: response.data.user + response.data.token
-  const deriveUserFromResponse = useCallback(
-    (user: LoginUser): AuthUser => {
-      const baseUser: AuthUser = {
-        id: String(user.id ?? ''),
-        email: user.email ?? '',
-        accountType: 'admin',
-        isActive: !(user.blocked ?? false),
-        isVerified: true,
-        firstName: user.first_name ?? undefined,
-        lastName: user.last_name ?? undefined,
-      };
-
-      // If user is a super user, role is already set via accountType
-      if (user.is_superUser) baseUser.role = 'admin';
-
-      return baseUser;
-    },
-    []
-  );
-
-
-
   const login = useCallback(
     async (email: string, password: string) => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // POST to login endpoint (single endpoint, account type detected from response)
-        const response = await post('LOGIN', { email, password });
+        const user = await authService.login({ email, password });
+        const authUser = convertUserToAuthUser(user);
 
-        // Expect new API shape: response.data.user and response.data.token
-        const payload = response?.data ?? response;
-        const userPayload = payload?.user as LoginUser | undefined;
-        const token = payload?.token as string | undefined;
-
-        if (!userPayload || !token) {
-          throw new Error('Invalid login response from server');
-        }
-
-        const authUser = deriveUserFromResponse(userPayload);
-        const authTokens: AuthTokens = { token };
+        // For Supabase, we don't have a separate token, but we can set a dummy token or handle differently
+        // Since Supabase handles auth via cookies/sessions, we can set tokens to null or a placeholder
+        const authTokens: AuthTokens = { token: 'supabase_session' };
 
         // Save to storage and update context
         saveToStorage(authUser, authTokens);
@@ -125,9 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Show success message
         toast.success('Login successful!');
 
-        // Auto-redirect based on detected account type
-        // const redirectPath = authUser.accountType === 'system_admin' ? '/admin/dashboard' : '/merchant/dashboard';
-        const redirectPath = '/admin/dashboard';
+        // Auto-redirect based on role
+        const redirectPath = user.role === 'admin' ? '/admin/dashboard' : '/';
         router.push(redirectPath);
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Login failed';
@@ -138,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [saveToStorage, router, deriveUserFromResponse]
+    [authService, convertUserToAuthUser, saveToStorage, router]
   );
 
   /**
@@ -146,6 +127,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    */
   const logout = useCallback(async () => {
     try {
+      await authService.logout();
+
       // Clear storage and state
       clearStorage();
       setTokens(null);
@@ -159,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Logout error:', err);
       toast.error('Logout failed');
     }
-  }, [clearStorage, router]);
+  }, [authService, clearStorage, router]);
 
 
   useEffect(() => {

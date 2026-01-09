@@ -1,32 +1,31 @@
-# React Template
+# Zambian E-commerce Template
 
-A modern, full-featured React template with authentication, admin dashboard, public pages, and a complete backend API. Built with Next.js 16, TypeScript, Tailwind CSS, and Radix UI components.
+A modern, full-featured e-commerce template with Supabase backend, admin dashboard, product catalog, shopping cart, and mock checkout. Built specifically for Zambian businesses with ZMW currency support. Uses Next.js 15, TypeScript, Tailwind CSS, and Radix UI components.
 
 ## Features
 
-- **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth)
-- **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics
-- **Public Pages**: Landing page with hero section, features, API documentation, and contact forms
-- **Backend API**: Complete REST API with authentication, CRUD operations, and middleware
-- **SEO Optimization**: Generic SEO component for managing meta tags, Open Graph, and Twitter Cards
+- **Supabase Backend**: PostgreSQL database, authentication, and storage
+- **Service Layer Architecture**: Repository pattern to decouple UI from database
+- **Authentication System**: Supabase Auth with email/password, protected routes
+- **Admin Dashboard**: Product management, order tracking, user management, and analytics
+- **Product Catalog**: Browse products, search, filter by category
+- **Shopping Cart**: Persistent cart with Supabase sync
+- **Mock Checkout**: Complete checkout flow with Mobile Money simulation
+- **SEO Optimization**: Generic SEO component for managing meta tags
 - **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components
 - **TypeScript**: Full type safety throughout the application
 - **Modern Tooling**: Next.js for full-stack development, ESLint for code quality, and pnpm for package management
-- **Routing**: Next.js App Router with API routes and client-side navigation
-- **Optional Firebase Integration**: Authentication, database (Firestore), and file storage
 
 ## Tech Stack
 
 - **Frontend**: React 19, TypeScript
-- **Backend**: Next.js API Routes
-- **Framework**: Next.js 16 (App Router)
+- **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS, Radix UI
-- **Routing**: Next.js App Router
-- **State Management**: React Context (for auth)
-- **Authentication**: JWT tokens
-- **Database**: In-memory storage (template - replace with PostgreSQL, MongoDB, etc.)
+- **State Management**: React Context (Auth, Cart)
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
 - **Icons**: Lucide React
-- **Forms**: Custom form components with validation
 - **Notifications**: Sonner for toast notifications
 
 ## Getting Started
@@ -35,6 +34,7 @@ A modern, full-featured React template with authentication, admin dashboard, pub
 
 - Node.js (version 18 or higher)
 - pnpm (recommended) or npm/yarn
+- A Supabase account ([Sign up here](https://supabase.com))
 
 ### Installation
 
@@ -49,12 +49,30 @@ A modern, full-featured React template with authentication, admin dashboard, pub
    pnpm install
    ```
 
-3. Start the development server:
+3. Set up Supabase:
+   - Create a new project at [database.new](https://database.new)
+   - Run the SQL scripts in order:
+     1. `src/scripts/schema.sql` (creates tables, RLS policies, functions)
+     2. `src/scripts/seed_data.sql` (seeds sample products and combos)
+   - Get your Project URL and anon key from Settings > API
+
+4. Configure environment variables:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Update `.env.local` with your Supabase credentials:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+5. Start the development server:
    ```bash
    pnpm dev
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+6. Open your browser and navigate to `http://localhost:3000`
 
 ### Build for Production
 
@@ -84,8 +102,9 @@ src/
 │   ├── (public)/                  # Public pages route group
 │   │   ├── layout.tsx             # MainLayout (Navbar + Footer)
 │   │   ├── page.tsx               # Home page
-│   │   └── home/
-│   │       └── components/        # Home page components
+│   │   ├── shop/
+│   │   │   └── page.tsx           # Product catalog
+│   │   └── HomeClient.tsx         # Home page client component
 │   ├── login/
 │   │   └── page.tsx               # Login page
 │   └── (admin)/                   # Admin pages route group
@@ -93,33 +112,75 @@ src/
 │       └── admin/
 │           ├── dashboard/
 │           │   └── page.tsx       # Admin dashboard
-│           └── LoginPage.tsx      # Login page component
+│           └── products/
+│               └── page.tsx       # Product management
 ├── components/
-│   ├── ui/                        # Reusable UI components
+│   ├── ui/                        # Reusable UI components (Radix)
 │   ├── auth/                      # Authentication components
 │   ├── footer.tsx                 # Site footer
-│   ├── navbar.tsx                 # Navigation bar
-│   └── ...
-├── layouts/                       # Legacy layouts (can be removed)
+│   ├── navbar.tsx                 # Site navigation
+├── layouts/
+│   ├── AdminLayout.tsx            # Admin sidebar layout
+│   └── MainLayout.tsx             # Public page layout
 ├── lib/
-│   ├── context/                   # React contexts
-│   ├── api/                       # API utilities
+│   ├── context/                   # React contexts (Auth, Cart)
+│   ├── supabase/                  # Supabase client/server setup
+│   ├── api/                       # API utilities (legacy)
 │   └── utils.ts                   # Utility functions
+├── services/                      # Service layer (Repository pattern)
+│   ├── types.ts                   # Service interfaces
+│   ├── SupabaseAuthService.ts     # Auth implementation
+│   ├── SupabaseProductService.ts  # Product CRUD
+│   └── SupabaseCartService.ts     # Cart management
+├── scripts/                       # SQL migration scripts
+│   ├── schema.sql                 # Database schema
+│   └── seed_data.sql              # Sample data
 ├── types/
 │   └── auth.ts                    # TypeScript types
 └── assets/                        # Static assets (logos, images)
 ```
 
-## Key Components
+## Key Features
+
+### Service Layer Architecture
+- **Repository Pattern**: Decouples UI from Supabase
+- **IAuthService**: Authentication interface
+- **IProductService**: Product CRUD interface
+- **ICartService**: Cart management interface
+- Easy to swap Supabase for another backend
 
 ### Authentication
+- **Supabase Auth**: Email/password authentication
 - **AuthContext**: Manages user authentication state
 - **ProtectedRoute**: Wraps routes that require authentication
-- **LoginForm**: Handles user login with email/password
+- **Role-based Access**: Admin vs Customer routes
+
+### Admin Dashboard
+- Product management (CRUD operations)
+- Order tracking and management
+- User management
+- Analytics and reports
+- Sidebar navigation with collapse/expand
+
+### Product Catalog
+- Browse all products
+- Search functionality
+- Category filtering
+- Product variants (size, color)
+- Stock management
+- Image galleries
+
+### Shopping Cart
+- Persistent cart (synced to Supabase)
+- Add/remove items
+- Update quantities
+- Guest cart support
+- Cart sync on login
 
 ### Routing
-- Public routes: `/` (home), `/login`
-- Admin routes: `/admin/dashboard` (protected)
+- Public routes: `/`, `/shop`, `/shop/[id]`
+- Admin routes: `/admin/dashboard`, `/admin/products`, `/admin/orders`
+- Auth routes: `/login`, `/register`
 
 ### UI Components
 - Built with Radix UI primitives for accessibility

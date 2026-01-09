@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight, Package, ShoppingCart, Users } from 'lucide-react';
 import { TopNavBar } from '@/components/TopNavBar';
 import { useAuth } from '@/lib/context/useAuth';
 
@@ -69,6 +69,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       <Link href="/admin/dashboard" className="flex items-center gap-3">
                         <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
                         {!isCollapsed && <span>Dashboard</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={pathname?.startsWith('/admin/products')}
+                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                        isCollapsed ? 'justify-center px-2' : ''
+                      }`}
+                      title={isCollapsed ? 'Products' : ''}
+                    >
+                      <Link href="/admin/products" className="flex items-center gap-3">
+                        <Package className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Products</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={pathname?.startsWith('/admin/orders')}
+                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                        isCollapsed ? 'justify-center px-2' : ''
+                      }`}
+                      title={isCollapsed ? 'Orders' : ''}
+                    >
+                      <Link href="/admin/orders" className="flex items-center gap-3">
+                        <ShoppingCart className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Orders</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={pathname?.startsWith('/admin/users')}
+                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                        isCollapsed ? 'justify-center px-2' : ''
+                      }`}
+                      title={isCollapsed ? 'Users' : ''}
+                    >
+                      <Link href="/admin/users" className="flex items-center gap-3">
+                        <Users className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span>Users</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
