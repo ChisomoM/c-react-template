@@ -38,6 +38,9 @@ import { Product, ProductVariant } from '@/services/types'
 import { supabase } from '@/lib/supabase/client'
 import { ManageStockDialog } from './ManageStockDialog'
 
+// Types
+type SubmissionValues = Omit<ProductFormValues, 'variants'> & { variants?: ProductVariant[] }
+
 // Schema
 const productFormSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
@@ -80,7 +83,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
   const storageService = new SupabaseStorageService()
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as any,
     defaultValues: initialData
       ? {
           title: initialData.title,
@@ -251,9 +254,15 @@ export function ProductForm({ initialData }: ProductFormProps) {
       
       const submissionImages = [...retainedUrls, ...uploadedUrls]
       
+      // Prepare submission values with correct types
+      const submissionValues: SubmissionValues = {
+        ...values,
+        variants: values.variants?.map(v => ({ ...v, product_id: initialData?.id || '' })) as ProductVariant[],
+      }
+      
       // Construct Payload
       const payload = {
-          ...values,
+          ...submissionValues,
           images: submissionImages,
       }
 

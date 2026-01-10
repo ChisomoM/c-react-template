@@ -6,9 +6,10 @@ import Image from 'next/image'
 import { motion, useScroll, useInView } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import { Footer } from '@/components/footer'
+import { cn } from '@/lib/utils'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -78,7 +79,7 @@ export default function HomeClient() {
 // Hero Grid Component
 function HeroGrid() {
   const [currentHero, setCurrentHero] = useState(0)
-  const ctaRef = useRef<HTMLButtonElement>(null)
+  const ctaRef = useRef<HTMLAnchorElement>(null)
   const heroSectionRef = useRef<HTMLDivElement>(null)
 
   const heroImages = [
@@ -162,16 +163,17 @@ function HeroGrid() {
             <p className="font-sora font-light text-lg text-white/90 mb-8 max-w-md leading-relaxed">
               {heroImages[currentHero].subtitle}
             </p>
-            <Button
+            <Link
               ref={ctaRef}
-              asChild
-              className="bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-base px-8 py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)] relative overflow-hidden"
+              href="/shop"
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'default' }),
+                "bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-base px-8 py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)] relative overflow-hidden"
+              )}
             >
-              <Link href="/shop">
-                {heroImages[currentHero].cta}
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+              {heroImages[currentHero].cta}
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Link>
           </motion.div>
 
           {/* Hero Indicators */}
@@ -568,15 +570,16 @@ function VideoSection() {
         <h2 className="font-sora font-bold text-5xl md:text-6xl text-white mb-8 tracking-tight">
           Experience the Difference
         </h2>
-        <Button
-          asChild
-          className="bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-base px-8 py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)]"
+        <Link 
+          href="/shop"
+          className={cn(
+            buttonVariants({ variant: 'default', size: 'default' }),
+            "bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-base px-8 py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)]"
+          )}
         >
-          <Link href="/shop">
-            View Collection
-            <ChevronRight className="ml-2 h-5 w-5" />
-          </Link>
-        </Button>
+          View Collection
+          <ChevronRight className="ml-2 h-5 w-5" />
+        </Link>
       </motion.div>
     </section>
   )

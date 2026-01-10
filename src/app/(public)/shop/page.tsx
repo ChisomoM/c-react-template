@@ -138,7 +138,7 @@ export default function ShopPage() {
             Shop Collection
           </h1>
           <p className="font-sora font-light text-lg text-gray-600">
-            Discover our curated selection of premium fashion
+            Discover our curated selection of Luxury
           </p>
         </motion.div>
 

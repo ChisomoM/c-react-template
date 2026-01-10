@@ -5,21 +5,27 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/context/cart'
 import { useAuth } from '@/lib/context/useAuth'
 import { SupabaseOrderService } from '@/services/SupabaseOrderService'
+import { MockOrderService } from '@/services/MockOrderService'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, CreditCard, Smartphone } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 export default function CheckoutPage() {
   const { items, clearCart, isLoading: cartLoading } = useCart()
   const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
-  const orderService = new SupabaseOrderService()
+  // Use mock service for now as requested
+  // const orderService = new SupabaseOrderService()
+  const orderService = new MockOrderService()
   
   const [loading, setLoading] = useState(false)
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false)
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -73,17 +79,22 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!formData.email) {
+        toast.error('Email is required for receipt')
+        return
+    }
+
+    setShowPaymentDialog(true)
+  }
+
+  const handlePlaceOrder = async (method: 'card' | 'mobile_money') => {
     setLoading(true)
+    setShowPaymentDialog(false)
 
     try {
-      if (!formData.email) {
-          toast.error('Email is required for receipt')
-          setLoading(false)
-          return
-      }
-      
       const shipping_address = {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -97,6 +108,7 @@ export default function CheckoutPage() {
       await orderService.createOrder({
         total_zmw: total,
         shipping_address: shipping_address,
+        payment_method: method,
         items: items.map(item => ({
              product_id: item.product_id,
              quantity: item.quantity,
@@ -129,7 +141,7 @@ export default function CheckoutPage() {
               <CardTitle>Shipping Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <form id="checkout-form" onSubmit={handleSubmit} className="space-y-4">
+              <form id="checkout-form" onSubmit={handleFormSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
@@ -261,13 +273,45 @@ export default function CheckoutPage() {
                     Processing...
                   </>
                 ) : (
-                  'Place Order'
+                  'Proceed to Payment'
                 )}
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Select Payment Method</DialogTitle>
+            <DialogDescription>
+              Choose how you would like to pay for your order.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+             <Button 
+               variant="outline" 
+               className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
+               onClick={() => handlePlaceOrder('card')}
+               disabled={loading}
+             >
+                <CreditCard className="h-10 w-10 text-primary" />
+                <span className="text-lg font-semibold">Card</span>
+             </Button>
+
+             <Button 
+               variant="outline" 
+               className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
+               onClick={() => handlePlaceOrder('mobile_money')}
+               disabled={loading}
+             >
+                <Smartphone className="h-10 w-10 text-primary" />
+                <span className="text-lg font-semibold">Mobile Money</span>
+             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

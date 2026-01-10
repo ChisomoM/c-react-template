@@ -194,8 +194,8 @@ export default function AnalyticsPage() {
                     tickFormatter={(value) => `ZMW ${value}`}
                   />
                   <Tooltip 
-                     formatter={(value: number) => [`ZMW ${value.toLocaleString()}`, 'Revenue']}
-                     labelFormatter={(label) => format(new Date(label), 'PPP')}
+                     formatter={(value: any) => [`ZMW ${Number(value).toLocaleString()}`, 'Revenue']}
+                     labelFormatter={(label: any) => format(new Date(label), 'PPP')}
                   />
                   <Line 
                     type="monotone" 
@@ -245,7 +245,7 @@ export default function AnalyticsPage() {
                               <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                               <XAxis type="number" hide />
                               <YAxis dataKey="area" type="category" width={100} tick={{fontSize: 12}} />
-                              <Tooltip formatter={(value: number) => [`ZMW ${value.toLocaleString()}`, 'Revenue']} />
+                              <Tooltip formatter={(value: any) => [`ZMW ${Number(value).toLocaleString()}`, 'Revenue']} />
                               <Bar dataKey="revenue" fill="#8884d8" radius={[0, 4, 4, 0]} barSize={20} />
                           </BarChart>
                       </ResponsiveContainer>

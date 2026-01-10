@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/client'
+﻿import { supabase } from '@/lib/supabase/client'
 import { IOrderService, Order, OrderItem } from './types'
 
 export class SupabaseOrderService implements IOrderService {
@@ -19,6 +19,7 @@ export class SupabaseOrderService implements IOrderService {
         status: 'pending',
         total_zmw: orderData.total_zmw,
         shipping_address: orderData.shipping_address,
+        payment_method: orderData.payment_method,
       })
       .select()
       .single()
@@ -109,3 +110,4 @@ export class SupabaseOrderService implements IOrderService {
     return data
   }
 }
+

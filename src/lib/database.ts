@@ -27,12 +27,12 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-export function createSuccessResponse(data: any, message: string = "Success") {
+export function createSuccessResponse(data: any, message: string = "Success", statusCode: number = 200) {
   return NextResponse.json({
     data,
     message,
     status: 0
-  });
+  }, { status: statusCode });
 }
 
 export function createErrorResponse(message: string, status: number = 400) {

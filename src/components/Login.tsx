@@ -1,6 +1,6 @@
 
 // import { CorporateRegistrationModal } from './CorporateRegistrationModal';
-import { LoginPage } from '../(admin)/admin/LoginPage';
+import { LoginPage } from '@/app/(admin)/admin/LoginPage';
 import { useState } from 'react';
 
 export default function Login() {
@@ -8,7 +8,7 @@ export default function Login() {
 
   return (
     <>
-      <LoginPage onSignUpClick={() => setModalOpen(true)} />
+      <LoginPage />
       {/* <CorporateRegistrationModal
         open={modalOpen}
         onOpenChange={setModalOpen}

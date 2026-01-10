@@ -110,6 +110,7 @@ export interface Order {
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | 'returned'
   total_zmw: number
   shipping_address: ShippingAddress
+  payment_method?: 'card' | 'mobile_money'
   created_at: string
   items?: OrderItem[]
 }
@@ -205,5 +206,6 @@ export interface IBranchService {
   getBranchInventory(branchId: string, productId: string): Promise<BranchInventory[]>
   updateBranchStock(branchId: string, productId: string, variantId: string | undefined | null, quantity: number): Promise<void>
 }
+
 
 

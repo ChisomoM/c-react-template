@@ -18,7 +18,7 @@ export default function Navbar(){
     const navItems = [
         {name: 'Home', href: '/'},
         {name: 'Shop', href: '/shop'},
-        {name: 'Collections', href: '/shop?view=collections'},
+        // {name: 'Collections', href: '/shop?view=collections'},
         {name: 'About', href: '/#about'},
     ];
 
@@ -61,22 +61,18 @@ export default function Navbar(){
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-                scrolled 
-                    ? 'bg-white/95 backdrop-blur-md shadow-sm' 
-                    : 'bg-transparent'
-            }`}
+            className="fixed w-full top-0 z-50 bg-white shadow-sm transition-all duration-300"
         >
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="flex justify-between items-center h-20">
                     {/* Logo */}
                     <Link href="/" className="flex-shrink-0 group">
                         <div className="flex items-center">
-                            <span className="font-sora font-extrabold text-2xl tracking-tight text-charcoal group-hover:text-gold-dark transition-colors duration-300">
+                            {/* <span className="font-sora font-extrabold text-2xl tracking-tight text-charcoal group-hover:text-gold-dark transition-colors duration-300">
                                 Premium
-                            </span>
+                            </span> */}
                             <span className="font-sora font-extrabold text-2xl tracking-tight ml-1 text-gold-primary">
-                                Fashion
+                                Luxury
                             </span>
                         </div>
                     </Link>
@@ -92,17 +88,17 @@ export default function Navbar(){
                                     transition-all duration-300 group
                                     ${isActive(item.href) 
                                         ? 'text-gold-primary' 
-                                        : scrolled ? 'text-gray-900 hover:text-gold-primary' : 'text-white hover:text-gold-bright'
+                                        : 'text-gray-900 hover:text-gold-primary'
                                     }
                                 `}
                                 onClick={(e) => handleNavClick(e, item.href)}
                             >
                                 {item.name}
-                                {/* Active/Hover underline */}
+                                {/* Active underline */}
                                 <motion.span
                                     className={`absolute bottom-0 left-0 h-0.5 bg-gold-primary`}
                                     initial={{ width: isActive(item.href) ? '100%' : '0%' }}
-                                    whileHover={{ width: '100%' }}
+                                    animate={{ width: isActive(item.href) ? '100%' : '0%' }}
                                     transition={{ duration: 0.3 }}
                                 />
                             </Link>
@@ -114,10 +110,7 @@ export default function Navbar(){
                         {/* Cart Icon */}
                         <Link 
                             href="/cart" 
-                            className={`
-                                relative p-2 transition-all duration-300 group
-                                ${scrolled ? 'text-charcoal hover:text-gold-primary' : 'text-white hover:text-gold-bright'}
-                            `}
+                            className="relative p-2 transition-all duration-300 group text-charcoal hover:text-gold-primary"
                         >
                             <ShoppingCart className="h-5 w-5" strokeWidth={1.5} />
                             {items.length > 0 && (
@@ -135,10 +128,7 @@ export default function Navbar(){
                         <button
                             onClick={onGetStarted}
                             aria-label="Account"
-                            className={`
-                                p-2 transition-all duration-300
-                                ${scrolled ? 'text-charcoal hover:text-gold-primary' : 'text-white hover:text-gold-bright'}
-                            `}
+                            className="p-2 transition-all duration-300 text-charcoal hover:text-gold-primary"
                         >
                             <User className="h-5 w-5" strokeWidth={1.5} />
                         </button>
@@ -156,10 +146,7 @@ export default function Navbar(){
                     <div className="md:hidden flex items-center gap-4">
                         <Link 
                             href="/cart" 
-                            className={`
-                                relative p-2 transition-colors
-                                ${scrolled ? 'text-charcoal' : 'text-white'}
-                            `}
+                            className="relative p-2 transition-colors text-charcoal"
                         >
                             <ShoppingCart className="h-5 w-5" />
                             {items.length > 0 && (
@@ -170,10 +157,7 @@ export default function Navbar(){
                         </Link>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`
-                                inline-flex items-center justify-center p-2 rounded-none transition-colors
-                                ${scrolled ? 'text-charcoal hover:text-gold-primary' : 'text-white hover:text-gold-bright'}
-                            `}
+                            className="inline-flex items-center justify-center p-2 rounded-none transition-colors text-charcoal hover:text-gold-primary"
                             aria-label="Toggle menu"
                             aria-expanded={String(isOpen)}
                         >

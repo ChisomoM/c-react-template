@@ -2,16 +2,16 @@ import { NextRequest } from 'next/server';
 import { items, createSuccessResponse, createErrorResponse } from '@/lib/database';
 import { requireAuth } from '@/lib/auth-backend';
 
-interface RouteParams {
-  params: { id: string };
+interface RouteContext {
+  params: Promise<{ id: string }>;
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteContext) {
   const auth = requireAuth(request);
-  if (auth instanceof Response) return auth;
+  if ('error' in auth) return auth.error;
 
   const { user } = auth;
-  const { id } = params;
+  const { id } = await params;
 
   // Find item
   const item = items.find(i => i.id === id && i.userId === user.id);
@@ -22,14 +22,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   return createSuccessResponse(item, 'Item retrieved successfully');
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
   const auth = requireAuth(request);
-  if (auth instanceof Response) return auth;
+  if ('error' in auth) return auth.error;
 
   try {
     const { title, description } = await request.json();
     const { user } = auth;
-    const { id } = params;
+    const { id } = await params;
 
     // Find item
     const itemIndex = items.findIndex(i => i.id === id && i.userId === user.id);
@@ -58,12 +58,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   const auth = requireAuth(request);
-  if (auth instanceof Response) return auth;
+  if ('error' in auth) return auth.error;
 
   const { user } = auth;
-  const { id } = params;
+  const { id } = await params;
 
   // Find item
   const itemIndex = items.findIndex(i => i.id === id && i.userId === user.id);

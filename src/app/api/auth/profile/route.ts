@@ -4,7 +4,7 @@ import { requireAuth } from '@/lib/auth-backend';
 
 export async function GET(request: NextRequest) {
   const auth = requireAuth(request);
-  if (auth instanceof Response) return auth;
+  if ('error' in auth) return auth.error;
 
   const { user } = auth;
 

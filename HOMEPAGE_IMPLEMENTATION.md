@@ -68,7 +68,8 @@
 
 **Libraries Installed:**
 - \gsap\ - Advanced animations (parallax, scroll triggers)
-- \eact-intersection-observer\ - Scroll-based triggers
+- \
+eact-intersection-observer\ - Scroll-based triggers
 - \ramer-motion\ - React animation library (already present)
 
 **Files Modified:**
@@ -208,7 +209,7 @@ gold: {
 
 - All animations are performant (GPU-accelerated transforms)
 - Gold usage strictly adheres to 10% rule
-- Typography uses proper kerning and line heights
+- Typography uLuxurying and line heights
 - Brand name "Premium Fashion" used (replace with your actual brand)
 - Footer copyright auto-updates to current year
 

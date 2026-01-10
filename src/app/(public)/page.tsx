@@ -3,7 +3,7 @@ import HomeClient from './HomeClient'
 
 export const metadata: Metadata = {
   title: 'Home - Zambian E-commerce',
-  description: 'Premium fashion and accessories for the modern Zambian gentleman',
+  description: 'Luxury and accessories for the modern Zambian gentleman',
 }
 
 export default function Page() {
