@@ -124,6 +124,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [authService, convertUserToAuthUser, saveToStorage, router]
   );
 
+  const register = useCallback(
+    async (data: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      phone?: string;
+    }) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const user = await authService.register({
+          email: data.email,
+          password: data.password,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          phone: data.phone,
+        });
+
+        const authUser = convertUserToAuthUser(user);
+        const authTokens: AuthTokens = { token: 'supabase_session' };
+
+        saveToStorage(authUser, authTokens);
+        setTokens(authTokens);
+        setUser(authUser);
+
+        toast.success('Account created successfully!');
+        router.push('/');
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Registration failed';
+        setError(errorMsg);
+        toast.error(errorMsg);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [authService, convertUserToAuthUser, saveToStorage, router]
+  );
+
   /**
     LOGOUT - Clear all auth state and redirect to login
    */
@@ -163,6 +204,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Methods
     login,
+    register,
     logout,
     setUser,
     setTokens,

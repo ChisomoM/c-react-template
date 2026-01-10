@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/context/cart'
 import { useAuth } from '@/lib/context/useAuth'
@@ -14,25 +14,54 @@ import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
 export default function CheckoutPage() {
-  const { items, clearCart } = useCart()
-  const { user } = useAuth()
+  const { items, clearCart, isLoading: cartLoading } = useCart()
+  const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
   const orderService = new SupabaseOrderService()
   
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: user?.first_name || '',
-    lastName: user?.last_name || '',
+    firstName: '',
+    lastName: '',
+    email: '',
     address: '',
     area: '',
     city: 'Lusaka',
-    phone: user?.mobile || '',
+    phone: '',
   })
 
-  // Redirect if cart is empty
-  if (items.length === 0) {
-    if (typeof window !== 'undefined') router.push('/cart')
-    return null
+  // Initialize form data when user loads
+  useEffect(() => {
+    // Only update defaults if state is still empty (or roughly empty)
+    // to avoid overwriting user input if auth loads late
+    if (user && !authLoading) {
+      setFormData(prev => {
+        // Only update if previous value is empty, so we don't clear what user typed
+        return {
+          ...prev,
+          firstName: prev.firstName || user.firstName || '',
+          lastName: prev.lastName || user.lastName || '',
+          email: prev.email || user.email || '',
+          phone: prev.phone || user.mobile || ''
+        }
+      })
+    }
+  }, [user, authLoading])
+
+  // Redirect if cart is empty after loading
+  useEffect(() => {
+    if (!cartLoading && items.length === 0) {
+       router.push('/cart')
+    }
+  }, [items, cartLoading, router])
+
+  if (cartLoading || (items.length === 0)) {
+     return (
+        <div className="container mx-auto px-4 py-16 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+            <p className="mt-4">Loading checkout...</p>
+        </div>
+     )
   }
 
   const subtotal = items.reduce((sum, item) => sum + (item.product?.price_zmw || 0) * item.quantity, 0)
@@ -49,12 +78,12 @@ export default function CheckoutPage() {
     setLoading(true)
 
     try {
-      if (!user) {
-        toast.error('Please login to place an order')
-        router.push('/login?redirect=/checkout')
-        return
+      if (!formData.email) {
+          toast.error('Email is required for receipt')
+          setLoading(false)
+          return
       }
-
+      
       const shipping_address = {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -62,6 +91,7 @@ export default function CheckoutPage() {
         area: formData.area,
         city: formData.city,
         phone: formData.phone,
+        email: formData.email,
       }
 
       await orderService.createOrder({
@@ -79,6 +109,7 @@ export default function CheckoutPage() {
       router.push('/checkout/success')
       
     } catch (error) {
+      console.error(error)
       const message = error instanceof Error ? error.message : 'Failed to place order'
       toast.error(message)
     } finally {
@@ -105,9 +136,9 @@ export default function CheckoutPage() {
                     <Input
                       id="firstName"
                       name="firstName"
+                      required
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      required
                     />
                   </div>
                   <div className="space-y-2">
@@ -115,34 +146,34 @@ export default function CheckoutPage() {
                     <Input
                       id="lastName"
                       name="lastName"
+                      required
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
+                    id="email"
+                    name="email"
+                    type="email"
                     required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="For order confirmation"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address">Start typing your address</Label>
+                  <Label htmlFor="address">Address</Label>
                   <Input
                     id="address"
                     name="address"
+                    required
                     value={formData.address}
                     onChange={handleInputChange}
-                    required
-                    placeholder="Street address, House number"
                   />
                 </div>
 
@@ -154,8 +185,6 @@ export default function CheckoutPage() {
                       name="area"
                       value={formData.area}
                       onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Northmead"
                     />
                   </div>
                   <div className="space-y-2">
@@ -163,83 +192,76 @@ export default function CheckoutPage() {
                     <Input
                       id="city"
                       name="city"
+                      required
                       value={formData.city}
                       onChange={handleInputChange}
-                      required
+                      readOnly
+                      className="bg-gray-100"
                     />
                   </div>
                 </div>
-              </form>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment Method</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="p-4 border rounded-md bg-gray-50 text-sm text-gray-600">
-                    Payment is currently simulated. No actual charge will be made.
-                    <br/>
-                    <strong>Cash on Delivery</strong> is selected by default.
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
                 </div>
+              </form>
             </CardContent>
           </Card>
         </div>
 
         {/* Order Summary */}
         <div>
-          <Card className="sticky top-20">
+          <Card>
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+              <div className="space-y-2">
                 {items.map((item) => (
-                  <div key={item.product_id} className="flex justify-between text-sm">
-                    <div className="flex gap-2">
-                        <span className="text-gray-500">{item.quantity}x</span>
-                        <span className="font-medium truncate max-w-[150px]">{item.product?.title}</span>
-                    </div>
+                  <div key={item.id || item.product_id} className="flex justify-between text-sm">
+                    <span className="max-w-[70%] truncate">
+                      {item.quantity}x {item.product?.title}
+                    </span>
                     <span>ZMW {((item.product?.price_zmw || 0) * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
-              
               <Separator />
-              
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>ZMW {subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span>ZMW {shippingCost.toFixed(2)}</span>
-                </div>
+              <div className="flex justify-between text-sm">
+                <span>Subtotal</span>
+                <span>ZMW {subtotal.toFixed(2)}</span>
               </div>
-              
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span>ZMW {shippingCost.toFixed(2)}</span>
+              </div>
               <Separator />
-              
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span>ZMW {total.toFixed(2)}</span>
               </div>
-
-              <Button
-                type="submit"
-                form="checkout-form"
-                className="w-full"
+              
+              <Button 
+                type="submit" 
+                form="checkout-form" 
+                className="w-full" 
                 size="lg"
                 disabled={loading}
               >
                 {loading ? (
-                    <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                    </>
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
                 ) : (
-                    `Pay ZMW ${total.toFixed(2)}`
+                  'Place Order'
                 )}
               </Button>
             </CardContent>

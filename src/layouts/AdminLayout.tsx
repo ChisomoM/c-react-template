@@ -9,13 +9,12 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight, Package, ShoppingCart, Users } from 'lucide-react';
-import { TopNavBar } from '@/components/TopNavBar';
+import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight, Package, ShoppingCart, Users, User, Store } from 'lucide-react';
 import { useAuth } from '@/lib/context/useAuth';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isActive = (path: string) => pathname === path;
@@ -29,24 +28,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-50">
-      {/* Fixed Top Navigation Bar - 64px height */}
-      <TopNavBar />
-
-      {/* Main Content Area with Sidebar - starts below nav bar */}
-      <div className="pt-16">
+    <div className="min-h-screen bg-cream">
+      {/* Main Content Area with Sidebar */}
+      <div className="flex">
         <SidebarProvider>
-          {/* Vertical Sidebar with rounded corners and padding - separated from edges */}
-          <div 
-            className={`fixed top-20 left-4 h-[calc(100vh-6rem)] z-40 transition-all duration-300 ${
-              isCollapsed ? 'w-20' : 'w-64'
+          {/* Full-height Luxury Sidebar - charcoal with gold accents */}
+          <div
+            className={`fixed top-0 left-0 h-screen z-40 transition-all duration-300 bg-charcoal ${
+              isCollapsed ? 'w-20' : 'w-72'
             }`}
           >
-            <div className="h-full bg-white rounded-2xl shadow-sidebar p-4 flex flex-col relative">
+            <div className="h-full flex flex-col relative">
               {/* Toggle Button */}
               <button
                 onClick={toggleSidebar}
-                className="absolute -right-6 top-6 bg-white text-primary-blue rounded-full p-1.5 shadow-lg hover:bg-gray-50 transition-colors z-50 border-2 border-primary-blue/30"
+                className="absolute -right-4 top-8 bg-charcoal text-gold-primary rounded-full p-1.5 shadow-lg hover:bg-gold-primary hover:text-charcoal transition-all duration-300 z-50 border border-gold-dark"
               >
                 {isCollapsed ? (
                   <ChevronRight className="h-4 w-4" />
@@ -55,100 +51,179 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
               </button>
 
-              <div className="flex-1 overflow-y-auto">
-                <SidebarMenu className="space-y-1">
+              {/* Store Logo/Name Section */}
+              {!isCollapsed && (
+                <div className="px-6 py-8 border-b border-gray-600/30">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gold-primary flex items-center justify-center">
+                      <Store className="h-6 w-6 text-charcoal" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="font-sora font-bold text-white text-lg tracking-tight">
+                        Luxury
+                      </h2>
+                      <p className="font-sora font-light text-gray-600 text-xs">
+                        Admin Panel
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isCollapsed && (
+                <div className="px-4 py-8 border-b border-gray-600/30 flex justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gold-primary flex items-center justify-center">
+                    <Store className="h-5 w-5 text-charcoal" />
+                  </div>
+                </div>
+              )}
+
+              {/* Navigation Menu */}
+              <div className="flex-1 overflow-y-auto py-6 px-4">
+                <SidebarMenu className="space-y-2">
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       isActive={isActive('/admin') || isActive('/admin/dashboard')}
-                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
                         isCollapsed ? 'justify-center px-2' : ''
                       }`}
                       title={isCollapsed ? 'Dashboard' : ''}
                     >
-                      <Link href="/admin/dashboard" className="flex items-center gap-3">
+                      <Link href="/admin/dashboard" className="flex items-center gap-4 py-3 px-3">
                         <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
-                        {!isCollapsed && <span>Dashboard</span>}
+                        {!isCollapsed && <span className="font-medium">Dashboard</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       isActive={pathname?.startsWith('/admin/products')}
-                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
                         isCollapsed ? 'justify-center px-2' : ''
                       }`}
                       title={isCollapsed ? 'Products' : ''}
                     >
-                      <Link href="/admin/products" className="flex items-center gap-3">
+                      <Link href="/admin/products" className="flex items-center gap-4 py-3 px-3">
                         <Package className="h-5 w-5 flex-shrink-0" />
-                        {!isCollapsed && <span>Products</span>}
+                        {!isCollapsed && <span className="font-medium">Products</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       isActive={pathname?.startsWith('/admin/orders')}
-                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
                         isCollapsed ? 'justify-center px-2' : ''
                       }`}
                       title={isCollapsed ? 'Orders' : ''}
                     >
-                      <Link href="/admin/orders" className="flex items-center gap-3">
+                      <Link href="/admin/orders" className="flex items-center gap-4 py-3 px-3">
                         <ShoppingCart className="h-5 w-5 flex-shrink-0" />
-                        {!isCollapsed && <span>Orders</span>}
+                        {!isCollapsed && <span className="font-medium">Orders</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       isActive={pathname?.startsWith('/admin/users')}
-                      className={`text-gray-700 hover:bg-gray-100 data-[active=true]:bg-orange-gradient data-[active=true]:text-white rounded-lg transition-colors ${
+                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
                         isCollapsed ? 'justify-center px-2' : ''
                       }`}
                       title={isCollapsed ? 'Users' : ''}
                     >
-                      <Link href="/admin/users" className="flex items-center gap-3">
+                      <Link href="/admin/users" className="flex items-center gap-4 py-3 px-3">
                         <Users className="h-5 w-5 flex-shrink-0" />
-                        {!isCollapsed && <span>Users</span>}
+                        {!isCollapsed && <span className="font-medium">Users</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                   <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname?.startsWith('/admin/branches')}
+                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
+                        isCollapsed ? 'justify-center px-2' : ''
+                      }`}
+                      title={isCollapsed ? 'Branches' : ''}
+                    >
+                      <Link href="/admin/branches" className="flex items-center gap-4 py-3 px-3">
+                        <Store className="h-5 w-5 flex-shrink-0" />
+                        {!isCollapsed && <span className="font-medium">Branches</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </div>
 
-              <div className="pt-4 border-t border-gray-200">
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={handleLogout}
-                      className={`text-gray-700 hover:bg-gray-100 rounded-lg transition-colors ${
-                        isCollapsed ? 'justify-center px-2' : ''
-                      }`}
-                      title={isCollapsed ? 'Log Out' : ''}
-                    >
-                      <LogOut className="h-5 w-5 flex-shrink-0" />
-                      {!isCollapsed && <span>Log Out</span>}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
+              {/* Account & Logout Section */}
+              <div className="border-t border-gray-600/30">
+                {/* User Account Section */}
+                {!isCollapsed && (
+                  <div className="px-6 py-4 border-b border-gray-600/30">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gold-primary/10 flex items-center justify-center border border-gold-dark/30">
+                        <User className="h-5 w-5 text-gold-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-sora font-semibold text-white text-sm truncate">
+                          {user?.first_name && user?.last_name
+                            ? `${user.first_name} ${user.last_name}`
+                            : user?.username || 'Admin User'}
+                        </h4>
+                        <p className="font-sora font-light text-gray-600 text-xs truncate">
+                          {user?.email || 'admin@example.com'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isCollapsed && (
+                  <div className="px-4 py-4 border-b border-gray-600/30 flex justify-center">
+                    <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center border border-gold-dark/30">
+                      <User className="h-4 w-4 text-gold-primary" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Logout Section */}
+                <div className="py-6 px-4">
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        onClick={handleLogout}
+                        className={`text-gray-300 hover:bg-gray-900 hover:text-gold-primary rounded-lg transition-all duration-300 font-sora ${
+                          isCollapsed ? 'justify-center px-2' : ''
+                        }`}
+                        title={isCollapsed ? 'Log Out' : ''}
+                      >
+                        <div className="flex items-center gap-4 py-3 px-3">
+                          <LogOut className="h-5 w-5 flex-shrink-0" />
+                          {!isCollapsed && <span className="font-medium">Log Out</span>}
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Main content area */}
-          <div 
+          <div
             className={`flex-1 transition-all duration-300 ${
-              isCollapsed ? 'ml-28' : 'ml-72'
+              isCollapsed ? 'ml-20' : 'ml-72'
             }`}
           >
-            <main className="p-8 min-h-[calc(100vh-4rem)] max-w-[calc(100vw-18rem)] lg:max-w-[calc(100vw-20rem)]">
+            <main className="p-8 min-h-screen">
               {children}
             </main>
           </div>

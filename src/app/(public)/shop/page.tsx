@@ -319,7 +319,7 @@ function ProductCard({
       onMouseLeave={() => setIsHovered(false)}
       className="group"
     >
-      <Link href={`/shop/${product.id}`}>
+      <Link href={`/product/${product.title.toLowerCase().replace(/\s+/g, '-')}`}>
         <div className="relative aspect-[4/5] overflow-hidden bg-cream mb-4">
           <Image
             src={getProductImage()}
@@ -343,7 +343,7 @@ function ProductCard({
       </Link>
 
       <div className="space-y-2">
-        <Link href={`/shop/${product.id}`}>
+        <Link href={`/product/${product.title.toLowerCase().replace(/\s+/g, '-')}`}>
           <h3 className="font-sora font-semibold text-lg text-charcoal group-hover:text-gold-dark transition-colors line-clamp-1">
             {product.title}
           </h3>

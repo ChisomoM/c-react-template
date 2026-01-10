@@ -36,7 +36,7 @@ export default function ProductsPage() {
   const loadProducts = async () => {
     try {
       setIsLoading(true)
-      const data = await productService.getProducts()
+      const data = await productService.getAdminProducts()
       setProducts(data)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load products'
@@ -112,8 +112,9 @@ export default function ProductsPage() {
               <TableRow>
                 <TableHead>Image</TableHead>
                 <TableHead>Title</TableHead>
+                <TableHead>SKU</TableHead>
                 <TableHead>Price (ZMW)</TableHead>
-                <TableHead>Stock</TableHead>
+                <TableHead>Inventory</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -135,17 +136,25 @@ export default function ProductsPage() {
                     )}
                   </TableCell>
                   <TableCell className="font-medium">{product.title}</TableCell>
+                  <TableCell className="text-sm text-gray-500">{product.sku || '-'}</TableCell>
                   <TableCell>{product.price_zmw.toFixed(2)}</TableCell>
                   <TableCell>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      product.stock_quantity > 10 
-                        ? 'bg-green-100 text-green-800'
-                        : product.stock_quantity > 0
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {product.stock_quantity}
-                    </span>
+                    <div className="flex flex-col items-start gap-1">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        (product.stock_quantity ?? 0) > (product.low_stock_threshold || 10)
+                            ? 'bg-green-100 text-green-800'
+                            : (product.stock_quantity ?? 0) > 0
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                        {product.stock_quantity ?? 0}
+                        </span>
+                        {product.variants && product.variants.length > 0 && (
+                            <span className="text-xs text-gray-400">
+                                {product.variants.length} variant(s)
+                            </span>
+                        )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

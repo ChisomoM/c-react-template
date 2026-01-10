@@ -98,6 +98,17 @@ The generic React template has been successfully transformed into a full-feature
   - Best Prices
   - Quality Assured
 - Call-to-action section for combos
+
+### 5. Authentication UI/UX Overhaul ✅
+
+#### Luxury Login & Signup experience
+- **Split-Screen Layout**: Modern semi-dark design with premium visual showcase.
+- **Unified Auth Flow**: Seamless switching between Login and Signup.
+- **Signup Implementation**: Full registration flow with first name, last name, phone, and password confirmation.
+- **Design System Alignment**: Follows "Quiet Luxury" guide (Sora font, Gold accents, Charcoal/White palette).
+- **Security Features**: Password visibility toggles and loading states.
+- **Form Validation**: Real-time error handling and toast notifications.
+- **Supabase Integration**: Direct integration with `SupabaseAuthService` for both login and registration.
 - Responsive design
 
 #### Shop Page (`/shop`)

@@ -5,9 +5,7 @@ export class SupabaseOrderService implements IOrderService {
   async createOrder(orderData: Omit<Order, 'id' | 'created_at' | 'status' | 'user_id' | 'items'> & { items: Omit<OrderItem, 'id' | 'order_id'>[] }): Promise<Order> {
     const { data: { user } } = await supabase.auth.getUser()
     
-    if (!user) {
-      throw new Error('User must be logged in to create an order')
-    }
+    // Removed login check to support guests
 
     // Start a Supabase transaction equivalent (RPC or sequential inserts)
     // Since Supabase doesn't support client-side transactions easily without RPC, we'll do sequential inserts
@@ -17,7 +15,7 @@ export class SupabaseOrderService implements IOrderService {
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
-        user_id: user.id,
+        user_id: user?.id || null, 
         status: 'pending',
         total_zmw: orderData.total_zmw,
         shipping_address: orderData.shipping_address,
@@ -50,7 +48,9 @@ export class SupabaseOrderService implements IOrderService {
 
     // 3. Clear Cart (Optional, but usually desired)
     // We can let the UI handle this or do it here. Doing it here is safer.
-    await supabase.from('cart_items').delete().eq('user_id', user.id)
+    if (user) {
+      await supabase.from('cart_items').delete().eq('user_id', user.id)
+    }
 
     return order
   }

@@ -76,6 +76,13 @@ export interface AuthContextState {
 export interface AuthContextMethods {
   // Account type is detected from the login response
   login(email: string, password: string): Promise<void>;
+  register(data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+  }): Promise<void>;
   logout(): Promise<void>;
   setUser(user: AuthUser | null): void;
   setTokens(tokens: AuthTokens | null): void;

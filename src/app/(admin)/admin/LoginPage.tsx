@@ -1,90 +1,89 @@
-import React from "react";
+"use client"
 
+import React, { useState, useEffect } from "react";
 import { LoginForm } from "@/components/auth/loginForm";
-import { Building2, ShieldCheck, FileCheck } from "lucide-react";
-// import { post } from "@/lib/api/crud";
+import { SignupForm } from "@/components/auth/signupForm";
+import { Star, ShieldCheck, Zap, Globe, ArrowRight } from "lucide-react";
+import { useAuth } from "@/lib/context/useAuth";
+import { useRouter } from "next/navigation";
 
-interface LoginPageProps {
-  onSignUpClick: () => void;
-}
+export const LoginPage: React.FC = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const { isAuthenticated, user } = useAuth();
+  const router = useRouter();
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/');
+      }
+    }
+  }, [isAuthenticated, user, router]);
+
   return (
-    <main className="h-screen flex flex-col lg:flex-row bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+    <main className="h-screen flex flex-col lg:flex-row bg-white overflow-hidden font-sora">
       {/* Left side - Form content */}
-      <div className="w-full lg:w-1/2 px-4 py-4 sm:px-6 sm:py-6 md:px-8 lg:px-12 flex flex-col gap-4 justify-center h-screen overflow-y-auto">
-        {/* Logo and Brand */}
-
-          {/* <img
-            src="U-KYC-logo-stacked.png"
-            alt="Chizo's React Template"
-            className="w-auto h-20 sm:h-24 md:h-28 mx-auto transform hover:scale-105 transition-transform duration-300"
-          /> */}
-          {/* <div className="></div> */}
-
-
-
-
-        <div className="w-full max-w-md mx-auto lg:max-w-none">
-          <LoginForm onSignUpClick={onSignUpClick} />
+      <div className="w-full lg:w-1/2 px-6 py-12 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center h-full overflow-y-auto bg-white">
+        <div className="w-full max-w-sm mx-auto">
+          {isLogin ? (
+            <LoginForm onSignUpClick={() => setIsLogin(false)} />
+          ) : (
+            <SignupForm onLoginClick={() => setIsLogin(true)} />
+          )}
         </div>
       </div>
 
       {/* Right side - Brand showcase */}
-       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden m-3 lg:m-4 rounded-3xl shadow-2xl">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#E5600B] via-[#D70F0E] to-[#B80D0B]"></div>
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden m-4 rounded-[2.5rem] shadow-2xl">
+        {/* Luxury Dark Background */}
+        <div className="absolute inset-0 bg-charcoal"></div>
 
-        {/* Animated pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
+        {/* Subtle Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/10 via-transparent to-charcoal"></div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-between p-6 lg:p-8 xl:p-10 text-white w-full h-full">
-          <div className="space-y-4">
-            <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight">
-              Welcome to React Template
-            </h2>
-            <p className="text-base lg:text-lg opacity-90 leading-relaxed max-w-lg">
-              A modern web application template built with React and TypeScript.
-            </p>
+        <div className="relative z-10 flex flex-col justify-between p-12 xl:p-20 text-white w-full h-full">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <Star className="w-4 h-4 text-gold-primary fill-gold-primary" />
+              <span className="text-xs font-semibold tracking-widest uppercase">Premium Experience</span>
+            </div>
+            
+            <div className="space-y-4">
+              <h2 className="text-4xl xl:text-6xl font-bold leading-[1.1] tracking-tight">
+                Exquisite Fashion, <span className="text-gold-primary">Redefined.</span>
+              </h2>
+              <p className="text-lg text-gray-400 leading-relaxed max-w-md">
+                Discover a curated collection of premium essentials designed for the modern connoisseur.
+              </p>
+            </div>
+
+            <button className="flex items-center gap-2 text-gold-primary font-bold group">
+              View Collections 
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
 
           {/* Feature highlights */}
-          <div className="grid gap-3 mt-auto">
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base">Modern Architecture</h3>
-                <p className="text-xs opacity-80">Built with Next.js and TypeScript</p>
-              </div>
+          <div className="grid grid-cols-2 gap-6 mt-auto">
+            <div className="space-y-3 p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all cursor-default">
+              <ShieldCheck className="w-8 h-8 text-gold-primary" />
+              <h3 className="font-bold text-lg">Secure Payments</h3>
+              <p className="text-sm text-gray-500">Enterprise grade encryption for every transaction.</p>
             </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base">Authentication</h3>
-                <p className="text-xs opacity-80">Secure user management system</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300">
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                <FileCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base">Responsive Design</h3>
-                <p className="text-xs opacity-80">Mobile-first with Tailwind CSS</p>
-              </div>
+            <div className="space-y-3 p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all cursor-default">
+              <Zap className="w-8 h-8 text-gold-primary" />
+              <h3 className="font-bold text-lg">Express Delivery</h3>
+              <p className="text-sm text-gray-500">Premium shipping to your doorstep, anywhere.</p>
             </div>
           </div>
         </div>
+
+        {/* Decorative Element */}
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-gold-primary/20 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold-primary/10 rounded-full blur-[100px]"></div>
       </div>
     </main>
   );
