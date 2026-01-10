@@ -48,6 +48,7 @@ export interface AuthUser extends Partial<LoginUser> {
   firstName?: string;
   lastName?: string;
   role?: string;
+  phone?: string;
   isVerified?: boolean;
   isActive?: boolean;
 }

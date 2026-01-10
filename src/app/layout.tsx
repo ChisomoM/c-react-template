@@ -1,10 +1,14 @@
-import { Inter } from 'next/font/google'
+import { Sora } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/lib/context/auth'
 import { CartProvider } from '@/lib/context/cart'
 import { Toaster } from 'sonner'
 
-const inter = Inter({ subsets: ['latin'] })
+const sora = Sora({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '700', '800'],
+  variable: '--font-sora',
+})
 
 export default function RootLayout({
   children,
@@ -13,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${sora.className} font-sora antialiased`}>
         <AuthProvider>
           <CartProvider>
             {children}

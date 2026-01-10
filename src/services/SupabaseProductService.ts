@@ -7,14 +7,14 @@ export class SupabaseProductService implements IProductService {
       .from('products')
       .select(`
         *,
+        categories!inner(slug),
         variants:product_variants(*)
       `)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
 
-    if (category) {
-      // Join with categories to filter by slug
-      query = query.eq('category_id', category)
+    if (category && category !== 'all') {
+      query = query.eq('categories.slug', category)
     }
 
     const { data, error } = await query

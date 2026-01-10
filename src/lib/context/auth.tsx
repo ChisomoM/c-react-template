@@ -44,6 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName: user.first_name,
       lastName: user.last_name,
       role: user.role,
+      phone: user.phone,
+      mobile: user.phone,
       accountType: user.role === 'admin' ? 'admin' : 'admin', // adjust as needed
       isActive: true,
       isVerified: true,

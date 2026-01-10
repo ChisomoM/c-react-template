@@ -1,11 +1,28 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
+        // Luxury Gold Palette
+        gold: {
+          primary: '#E6B800',
+          bright: '#FFD60A',
+          dark: '#CC9900',
+          light: '#FFEB99',
+        },
+        // Neutrals
+        charcoal: '#1A1A1A',
+        gray: {
+          900: '#2D2D2D',
+          600: '#757575',
+          300: '#E0E0E0',
+        },
+        cream: '#FAF7F2',
+        // Legacy colors (keeping for backward compatibility)
         primary: {
           blue: '#212A48',
           orange: '#E5600B',
@@ -29,6 +46,7 @@ export default {
         }
       },
       fontFamily: {
+        'sora': ['Sora', 'system-ui', 'sans-serif'],
         'myriad': ['Myriad Pro', 'system-ui', 'sans-serif'],
         'montserrat': ['Montserrat', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
         'outfit': ['Outfit', 'system-ui', 'sans-serif'],

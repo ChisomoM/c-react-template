@@ -11,155 +11,93 @@ import {
   Twitter,
   Linkedin,
   Instagram,
-  ArrowRight
+  ArrowRight,
+  Link
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Button } from './ui/button';
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
-  const footerLinks = {
-    'Platform': [
-      { label: 'Documentation', href: '#docs' },
-      { label: 'API Reference', href: '#api' },
-      { label: 'Getting Started', href: '#guide' },
-    ],
-    'Features': [
-      { label: 'Authentication', href: '#auth' },
-      { label: 'Dashboard', href: '#dashboard' },
-      { label: 'Components', href: '#components' },
-      { label: 'Themes', href: '#themes' },
-    ],
-    'Resources': [
-      { label: 'Templates', href: '#templates' },
-      { label: 'Examples', href: '#examples' },
-      { label: 'Community', href: '#community' },
-    ],
-    'Legal': [
-      { label: 'Privacy Policy', href: '#privacy' },
-      { label: 'Terms of Service', href: '#terms' },
-      { label: 'License', href: '#license' },
-    ]
-  };
-
   return (
-    <footer className="bg-gray-900 text-white">
-      {/* Newsletter Section
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
-              <p className="text-orange-100">
-                Get the latest updates on new features, partnerships, and industry insights.
-              </p>
-            </div>
-            <div className="flex space-x-4">
-              <Input 
-                type="email" 
-                placeholder="Enter your email"
-                className="bg-white text-gray-900 border-0 flex-1"
+    <footer className="bg-charcoal text-white py-16 px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          {/* Brand Column */}
+          <div>
+            <h3 className="font-sora font-extrabold text-2xl text-gold-bright mb-4">
+              Premium Fashion
+            </h3>
+            <p className="font-sora font-light text-sm text-gray-300">
+              Zambia's modern luxury fashion destination
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-sora font-semibold text-sm text-white mb-4 uppercase tracking-wider">
+              Shop
+            </h4>
+            <ul className="space-y-2">
+              {['Men', 'Women', 'Kids', 'Featured'].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={`/shop?category=${item.toLowerCase()}`}
+                    className="font-sora font-light text-sm text-gray-300 hover:text-gold-primary transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="font-sora font-semibold text-sm text-white mb-4 uppercase tracking-wider">
+              Support
+            </h4>
+            <ul className="space-y-2">
+              {['Shipping', 'Returns', 'Size Guide', 'FAQ'].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={`/${item.toLowerCase().replace(' ', '-')}`}
+                    className="font-sora font-light text-sm text-gray-300 hover:text-gold-primary transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h4 className="font-sora font-semibold text-sm text-white mb-4 uppercase tracking-wider">
+              Newsletter
+            </h4>
+            <p className="font-sora font-light text-sm text-gray-300 mb-4">
+              Get exclusive offers and updates
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="flex-1 bg-transparent border border-gray-600 text-white px-4 py-2 text-sm font-sora font-light focus:outline-none focus:border-gold-primary transition-colors"
               />
-              <Button variant="secondary" className="bg-white text-orange-600 hover:bg-gray-50 px-6">
-                Subscribe
-                <ArrowRight className="ml-2 w-4 h-4" />
+              <Button className="bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold rounded-none px-6">
+                Join
               </Button>
             </div>
           </div>
         </div>
-      </div> */}
 
-      {/* Main Footer Content */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-      >
-        <div className="grid lg:grid-cols-6 gap-8">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold">
-                React<span className="text-orange-500">Template</span>
-              </h2>
-              <p className="text-gray-400 mt-2">
-                A modern React template built with Next.js, TypeScript, and Tailwind CSS.
-                Perfect for building scalable web applications with authentication and responsive design.
-              </p>
-            </div>
-
-            {/* Contact Info */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">hello@reacttemplate.com</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">123 Template Street, Web City, WC 12345</span>
-              </div>
-            </div>
-
-            {/* Social Links
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div> */}
-          </div>
-
-          {/* Footer Links */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="font-semibold text-white mb-4">{category}</h3>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a 
-                      href={link.href}
-                      className="text-gray-400 hover:text-orange-500 transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-gray-600">
+          <p className="font-sora font-light text-xs text-gray-600 text-center">
+            © {new Date().getFullYear()} Premium Fashion. All rights reserved.
+          </p>
         </div>
-
-        <Separator className="my-8 bg-gray-800" />
-
-        {/* Bottom Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <div className="text-gray-400 text-sm">
-            © {currentYear} Probase Group. All rights reserved.
-          </div>
-          
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-gray-400">All systems operational</span>
-            </div>
-           
-          </div>
-        </div>
-      </motion.div>
+      </div>
     </footer>
-  );
+  )
 }

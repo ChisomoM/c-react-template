@@ -72,7 +72,13 @@ export class SupabaseCartService implements ICartService {
 
     const { data, error } = await supabase
       .from('cart_items')
-      .select('*')
+      .select(`
+        *,
+        product:products(
+          *,
+          variants:product_variants(*)
+        )
+      `)
       .eq('user_id', user.id)
 
     if (error) {
@@ -80,9 +86,11 @@ export class SupabaseCartService implements ICartService {
     }
 
     return data.map((item: any) => ({
+      id: item.id,
       product_id: item.product_id,
       quantity: item.quantity,
       variant_selection: item.variant_selection,
+      product: item.product,
     }))
   }
 

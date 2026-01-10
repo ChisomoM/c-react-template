@@ -140,6 +140,9 @@ CREATE TABLE IF NOT EXISTS combos (
   title TEXT NOT NULL,
   description TEXT,
   discount_percentage DECIMAL(5, 2) NOT NULL CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
+  price_zmw DECIMAL(10, 2), -- Optional explicit price
+  stock_quantity INTEGER DEFAULT 0, -- Optional explicit stock
+  images TEXT[] DEFAULT '{}',
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
