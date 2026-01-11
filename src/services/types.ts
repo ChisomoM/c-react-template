@@ -88,6 +88,9 @@ export interface CartItem {
   id?: string
   product_id: string
   quantity: number
+  name?: string
+  price?: number
+  image_url?: string
   variant_selection?: {
     size?: string
     color?: string
@@ -109,6 +112,7 @@ export interface Order {
   user_id: string
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | 'returned'
   total_zmw: number
+  payment_method: string
   shipping_address: ShippingAddress
   created_at: string
   items?: OrderItem[]
