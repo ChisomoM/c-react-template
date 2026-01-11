@@ -91,6 +91,7 @@ export interface CartItem {
   name?: string
   price?: number
   image_url?: string
+  stock_quantity?: number
   variant_selection?: {
     size?: string
     color?: string

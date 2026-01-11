@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
+import { Order, OrderItem, Product } from './types'
 import {
   startOfDay,
   endOfDay,
@@ -49,7 +50,7 @@ export interface AreaSales {
 export class SupabaseAnalyticsService {
   async getSummary(startDate: Date, endDate: Date): Promise<AnalyticsSummary> {
     // Fetch orders within range
-    const { data: orders, error } = await supabase
+    const { data: ordersData, error } = await supabase
       .from('orders')
       .select('*, items:order_items(*, product:products(cost_price_zmw))')
       .gte('created_at', startDate.toISOString())
@@ -58,7 +59,9 @@ export class SupabaseAnalyticsService {
 
     if (error) throw new Error(error.message)
 
-    const revenue = orders.reduce((sum, order) => sum + order.total_zmw, 0)
+    const orders = ordersData as unknown as Order[]
+
+    const revenue = orders.reduce((sum: number, order) => sum + order.total_zmw, 0)
     const ordersCount = orders.length
     const averageOrderValue = ordersCount > 0 ? revenue / ordersCount : 0
     const activeCustomers = new Set(orders.map(o => o.user_id)).size
@@ -73,7 +76,7 @@ export class SupabaseAnalyticsService {
     // Profit = (Sell Price - Cost Price) * Qty
     let totalCost = 0;
     orders.forEach(order => {
-        order.items.forEach((item: any) => {
+        order.items?.forEach((item) => {
              const cost = item.product?.cost_price_zmw || 0; // Default to 0 if not set
              totalCost += cost * item.quantity;
         })
@@ -93,7 +96,7 @@ export class SupabaseAnalyticsService {
   }
 
   async getSalesTrend(startDate: Date, endDate: Date): Promise<SalesTrend[]> {
-    const { data: orders, error } = await supabase
+    const { data: ordersData, error } = await supabase
       .from('orders')
       .select('created_at, total_zmw')
       .gte('created_at', startDate.toISOString())
@@ -101,6 +104,8 @@ export class SupabaseAnalyticsService {
       .neq('status', 'cancelled')
 
     if (error) throw new Error(error.message)
+
+    const orders = ordersData as unknown as Order[]
 
     // Group by day
     const days = eachDayOfInterval({ start: startDate, end: endDate })
@@ -129,7 +134,7 @@ export class SupabaseAnalyticsService {
   }
 
   async getTopProducts(startDate: Date, endDate: Date, limit = 5): Promise<ProductPerformance[]> {
-    const { data: items, error } = await supabase
+    const { data: itemsData, error } = await supabase
       .from('order_items')
       .select('product_id, quantity, price_at_purchase, product:products(title), orders!inner(created_at, status)')
       .gte('orders.created_at', startDate.toISOString())
@@ -138,9 +143,11 @@ export class SupabaseAnalyticsService {
 
     if (error) throw new Error(error.message)
 
+    const items = itemsData as unknown as (OrderItem & { product: { title: string } })[]
+
     const productMap = new Map<string, { title: string; quantity: number; revenue: number }>()
 
-    items.forEach((item: any) => {
+    items.forEach((item) => {
       // Note: Supabase response structure might vary slightly depending on join
       // item.product might be an array or object
       const title = item.product?.title || 'Unknown Product'
@@ -159,7 +166,7 @@ export class SupabaseAnalyticsService {
     })
 
     return Array.from(productMap.entries())
-      .map(([id, data]) => ({ id, ...data }))
+      .map(([id, data]) => ({ id, quantitySold: data.quantity, ...data }))
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, limit)
   }
@@ -170,16 +177,18 @@ export class SupabaseAnalyticsService {
       // we might need to filter client side or use a stored procedure/view.
       // For now, let's fetch active products and filter JS side (or use rpc if performance is critical later).
       
-      const { data: products, error } = await supabase
+      const { data: productsData, error } = await supabase
         .from('products')
         .select('id, title, stock_quantity, low_stock_threshold')
         .eq('is_active', true)
         
       if (error) throw new Error(error.message)
+
+      const products = productsData as unknown as Product[]
       
       return products
-        .filter((p: any) => p.stock_quantity <= (p.low_stock_threshold || 10))
-        .map((p: any) => ({
+        .filter((p) => p.stock_quantity <= (p.low_stock_threshold || 10))
+        .map((p) => ({
              id: p.id,
              title: p.title,
              stock_quantity: p.stock_quantity,
@@ -189,7 +198,7 @@ export class SupabaseAnalyticsService {
   }
 
   async getSalesByArea(startDate: Date, endDate: Date): Promise<AreaSales[]> {
-      const { data: orders, error } = await supabase
+      const { data: ordersData, error } = await supabase
         .from('orders')
         .select('shipping_address, total_zmw')
         .gte('created_at', startDate.toISOString())
@@ -197,10 +206,12 @@ export class SupabaseAnalyticsService {
         .neq('status', 'cancelled')
         
       if (error) throw new Error(error.message)
+
+      const orders = ordersData as unknown as Order[]
       
       const areaMap = new Map<string, { revenue: number, orders: number }>();
       
-      orders.forEach((order: any) => {
+      orders.forEach((order) => {
           // Extract area, fallback to city if area is missing, or "Unknown"
           const area = order.shipping_address?.area || order.shipping_address?.city || 'Unknown';
           const revenue = order.total_zmw;

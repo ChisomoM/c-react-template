@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -12,7 +12,7 @@ import { ShoppingCart, Package, SlidersHorizontal, X, ChevronDown } from 'lucide
 import { toast } from 'sonner'
 import { useCart } from '@/lib/context/cart'
 
-export default function ShopPage() {
+function ShopContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -381,5 +381,12 @@ function ProductCard({
         </Button>
       </div>
     </motion.div>
+  )
+}
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-charcoal"></div></div>}>
+      <ShopContent />
+    </Suspense>
   )
 }
