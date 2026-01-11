@@ -87,6 +87,15 @@ export class SupabaseProductService implements IProductService {
     // Separate variants from product data
     const { variants, ...productData } = product
 
+    // Auto-calculate total stock if variants are provided
+    if (variants && variants.length > 0) {
+        productData.stock_quantity = variants.reduce((sum, v) => sum + (v.stock_quantity || 0), 0)
+    }
+
+    // Sanitize data (convert empty strings to null for optional unique/uuid fields)
+    if (productData.category_id === '') delete productData.category_id;
+    if (productData.sku === '') delete productData.sku;
+
     // 1. Create Product
     const { data: newProduct, error } = await supabase
       .from('products')
@@ -95,6 +104,7 @@ export class SupabaseProductService implements IProductService {
       .single()
 
     if (error) {
+      console.error("Create Product Error:", error)
       throw new Error(error.message)
     }
 
@@ -106,7 +116,7 @@ export class SupabaseProductService implements IProductService {
         color: v.color,
         stock_quantity: v.stock_quantity || 0,
         cost_price_zmw: v.cost_price_zmw,
-        sku: v.sku
+        sku: v.sku === '' ? null : v.sku 
         // Omit ID to let DB generate it
       }))
 
@@ -115,9 +125,9 @@ export class SupabaseProductService implements IProductService {
         .insert(variantsToInsert)
       
       if (variantError) {
-        // Cleanup product if variant creation fails? 
-        // Ideally yes, but for now just throw
-        console.error("Failed to create variants", variantError)
+        console.error("Create Variants Error:", variantError)
+        // Cleanup product if variant creation fails
+        await this.deleteProduct(newProduct.id)
         throw new Error(variantError.message)
       }
     }
@@ -127,6 +137,19 @@ export class SupabaseProductService implements IProductService {
 
   async updateProduct(id: string, product: Partial<Product>): Promise<Product> {
     const { variants, ...productData } = product
+
+    // Auto-calculate total stock if variants are provided (authoritative list)
+    if (variants) {
+         productData.stock_quantity = variants.reduce((sum, v) => sum + (v.stock_quantity || 0), 0)
+    }
+
+    // Sanitize
+    if (productData.category_id === '') productData.category_id = undefined; // Undefined skips update for that field, or null to clear?
+    // If user wants to clear category, they send null. But form sends ''.
+    // For update, if we receive '', we probably mean clear it? Or keep it?
+    // If form sends '', it means "no category selected". So NULL.
+    if (productData.category_id === '') (productData as any).category_id = null;
+    if (productData.sku === '') (productData as any).sku = null;
 
     // 1. Update Product
     const { error } = await supabase
@@ -166,7 +189,7 @@ export class SupabaseProductService implements IProductService {
         color: v.color,
         stock_quantity: v.stock_quantity,
         cost_price_zmw: v.cost_price_zmw,
-        sku: v.sku
+        sku: v.sku === '' ? null : v.sku
       }))
       
       // Note: With Supabase JS Client, upserting mixed with new (no ID) and existing (with ID) 

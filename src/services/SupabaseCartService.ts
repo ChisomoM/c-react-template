@@ -82,7 +82,11 @@ export class SupabaseCartService implements ICartService {
       .eq('user_id', user.id)
 
     if (error) {
-      throw new Error(error.message)
+       // Ignore abort errors
+       if (error.message && (error.message.includes('abort') || error.message.includes('signal'))) {
+           return []
+       }
+       throw new Error(error.message)
     }
 
     return data.map((item: any) => ({

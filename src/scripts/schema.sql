@@ -31,11 +31,13 @@ BEGIN
     WHERE id = auth.uid() AND role = 'admin'
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Drop existing problematic policies
 DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
 DROP POLICY IF EXISTS "Admins can update all profiles" ON profiles;
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 DROP POLICY IF EXISTS "Admins can manage categories" ON categories;
 DROP POLICY IF EXISTS "Admins can view all products" ON products;
 DROP POLICY IF EXISTS "Admins can manage products" ON products;
@@ -45,6 +47,13 @@ DROP POLICY IF EXISTS "Admins can manage combo items" ON combo_items;
 DROP POLICY IF EXISTS "Admins can view all orders" ON orders;
 DROP POLICY IF EXISTS "Admins can update orders" ON orders;
 DROP POLICY IF EXISTS "Admins can view all order items" ON order_items;
+
+-- User Policies (Breaks Recursion for is_admin check)
+CREATE POLICY "Users can view own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
 
 -- Recreate policies with fixed function
 CREATE POLICY "Admins can view all profiles" ON profiles

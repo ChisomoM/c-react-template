@@ -126,11 +126,11 @@ function HeroGrid() {
   return (
     <section
       ref={heroSectionRef}
-      className="relative w-full h-screen overflow-hidden hero-section"
+      className="relative w-full min-h-screen overflow-hidden hero-section"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-4 md:gap-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen gap-0">
         {/* Large Hero Image - Left/Top */}
-        <div className="relative h-full overflow-hidden group">
+        <div className="relative h-[60vh] md:h-full overflow-hidden group">
           <motion.div
             key={currentHero}
             initial={{ opacity: 0 }}
@@ -155,12 +155,12 @@ function HeroGrid() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="absolute bottom-20 left-8 md:left-20 right-8 md:right-auto max-w-lg z-10"
+            className="absolute bottom-12 md:bottom-20 left-6 md:left-20 right-6 md:right-auto max-w-lg z-10"
           >
-            <h1 className="font-sora font-bold text-5xl md:text-6xl text-white mb-4 tracking-tight leading-tight">
+            <h1 className="font-sora font-bold text-4xl md:text-6xl text-white mb-3 md:mb-4 tracking-tight leading-tight">
               {heroImages[currentHero].title}
             </h1>
-            <p className="font-sora font-light text-lg text-white/90 mb-8 max-w-md leading-relaxed">
+            <p className="font-sora font-light text-base md:text-lg text-white/90 mb-6 md:mb-8 max-w-md leading-relaxed">
               {heroImages[currentHero].subtitle}
             </p>
             <Link
@@ -168,22 +168,22 @@ function HeroGrid() {
               href="/shop"
               className={cn(
                 buttonVariants({ variant: 'default', size: 'default' }),
-                "bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-base px-8 py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)] relative overflow-hidden"
+                "bg-gold-primary hover:bg-gold-dark text-charcoal font-sora font-semibold text-sm md:text-base px-6 md:px-8 py-4 md:py-6 rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(230,184,0,0.4)] relative overflow-hidden inline-flex items-center"
               )}
             >
               {heroImages[currentHero].cta}
-              <ChevronRight className="ml-2 h-5 w-5" />
+              <ChevronRight className="ml-2 h-4 md:h-5 w-4 md:w-5" />
             </Link>
           </motion.div>
 
           {/* Hero Indicators */}
-          <div className="absolute bottom-8 left-8 md:left-20 flex gap-2 z-10">
+          <div className="absolute bottom-4 md:bottom-8 left-6 md:left-20 flex gap-2 z-10">
             {heroImages.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentHero(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`w-10 h-1 transition-all duration-300 ${
+                className={`w-8 md:w-10 h-1 transition-all duration-300 ${
                   idx === currentHero ? 'bg-gold-primary' : 'bg-white/40'
                 }`}
               />
@@ -192,7 +192,7 @@ function HeroGrid() {
         </div>
 
         {/* Masonry Grid - Right/Bottom */}
-        <div className="grid grid-cols-2 gap-4 p-4 md:p-0 h-[50vh] md:h-full">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 p-3 md:p-0 min-h-[40vh] md:min-h-full">
           {masonryImages.map((item, idx) => (
             <MasonryCard
               key={item.category}

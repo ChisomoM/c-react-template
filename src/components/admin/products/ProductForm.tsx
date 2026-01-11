@@ -36,10 +36,7 @@ import { SupabaseProductService } from '@/services/SupabaseProductService'
 import { SupabaseStorageService } from '@/services/SupabaseStorageService'
 import { Product, ProductVariant } from '@/services/types'
 import { supabase } from '@/lib/supabase/client'
-import { ManageStockDialog } from './ManageStockDialog'
-
-// Types
-type SubmissionValues = Omit<ProductFormValues, 'variants'> & { variants?: ProductVariant[] }
+// import { ManageStockDialog } from './ManageStockDialog'
 
 // Schema
 const productFormSchema = z.object({
@@ -83,7 +80,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
   const storageService = new SupabaseStorageService()
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema) as any,
+    resolver: zodResolver(productFormSchema),
     defaultValues: initialData
       ? {
           title: initialData.title,
@@ -254,15 +251,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
       
       const submissionImages = [...retainedUrls, ...uploadedUrls]
       
-      // Prepare submission values with correct types
-      const submissionValues: SubmissionValues = {
-        ...values,
-        variants: values.variants?.map(v => ({ ...v, product_id: initialData?.id || '' })) as ProductVariant[],
-      }
-      
       // Construct Payload
       const payload = {
-          ...submissionValues,
+          ...values,
           images: submissionImages,
       }
 
@@ -453,20 +444,10 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         name={`variants.${index}.stock_quantity`}
                                         render={({ field }) => (
                                             <FormItem>
-                                            <FormLabel className="text-xs">Stock (Total)</FormLabel>
-                                            <div className="flex gap-2">
-                                                <FormControl>
-                                                    <Input type="number" {...field} readOnly className="bg-gray-50 text-gray-500" />
-                                                </FormControl>
-                                                <ManageStockDialog 
-                                                    productId={initialData?.id}
-                                                    variantId={form.getValues(`variants.${index}.id`)}
-                                                    title={`Stock: ${form.getValues(`variants.${index}.size`)} / ${form.getValues(`variants.${index}.color`)}`}
-                                                    disabled={!initialData?.id || !form.getValues(`variants.${index}.id`)}
-                                                    onUpdate={() => window.location.reload()}
-                                                />
-                                            </div>
-                                            {!form.getValues(`variants.${index}.id`) && <FormDescription className="text-[10px] text-orange-500 line-clamp-1">Save variant first</FormDescription>}
+                                            <FormLabel className="text-xs">Stock</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" {...field} />
+                                            </FormControl>
                                             </FormItem>
                                         )}
                                     />
@@ -535,20 +516,10 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     name="stock_quantity"
                                     render={({ field }) => (
                                         <FormItem>
-                                        <FormLabel>Stock Quantity (Total)</FormLabel>
-                                        <div className="flex gap-2">
-                                            <FormControl>
-                                                <Input type="number" {...field} readOnly className="bg-gray-50 text-gray-500" />
-                                            </FormControl>
-                                            <ManageStockDialog 
-                                                productId={initialData?.id}
-                                                variantId={undefined}
-                                                title={`Stock: ${initialData?.title}`}
-                                                disabled={!initialData?.id}
-                                                onUpdate={() => window.location.reload()}
-                                            />
-                                        </div>
-                                        <FormDescription>Calculated from branch inventory</FormDescription>
+                                        <FormLabel>Stock Quantity</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" {...field} />
+                                        </FormControl>
                                         <FormMessage />
                                         </FormItem>
                                     )}
