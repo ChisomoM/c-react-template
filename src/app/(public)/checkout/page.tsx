@@ -282,7 +282,7 @@ export default function CheckoutPage() {
       </div>
 
       <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle>Select Payment Method</DialogTitle>
             <DialogDescription>
@@ -290,25 +290,24 @@ export default function CheckoutPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 py-4">
-             <Button 
-               variant="outline" 
-               className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
-               onClick={() => handlePlaceOrder('card')}
-               disabled={loading}
-             >
+            <Button 
+              variant="outline" 
+              className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
+              onClick={() => handlePlaceOrder('card')}
+              disabled={loading}
+            >
                 <CreditCard className="h-10 w-10 text-primary" />
                 <span className="text-lg font-semibold">Card</span>
-             </Button>
-
-             <Button 
-               variant="outline" 
-               className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
-               onClick={() => handlePlaceOrder('mobile_money')}
-               disabled={loading}
-             >
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-32 flex flex-col items-center justify-center gap-4 hover:bg-primary/5 hover:border-primary transition-colors"
+              onClick={() => handlePlaceOrder('mobile_money')}
+              disabled={loading}
+            >
                 <Smartphone className="h-10 w-10 text-primary" />
                 <span className="text-lg font-semibold">Mobile Money</span>
-             </Button>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

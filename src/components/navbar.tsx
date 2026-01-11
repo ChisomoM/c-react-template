@@ -125,13 +125,13 @@ export default function Navbar(){
                         </Link>
 
                         {/* Account Icon */}
-                        <button
-                            onClick={onGetStarted}
+                        <Link
+                            href="/profile"
                             aria-label="Account"
                             className="p-2 transition-all duration-300 text-charcoal hover:text-gold-primary"
                         >
                             <User className="h-5 w-5" strokeWidth={1.5} />
-                        </button>
+                        </Link>
 
                         {/* CTA Button */}
                         <Button 
@@ -205,13 +205,14 @@ export default function Navbar(){
                                     </motion.div>
                                 ))}
                                 <div className="pt-4 space-y-3">
-                                    <Button 
-                                        onClick={onGetStarted}
-                                        variant="outline"
-                                        className="w-full border-charcoal text-charcoal hover:bg-charcoal hover:text-white font-sora font-semibold rounded-none"
-                                    >
-                                        Sign In
-                                    </Button>
+                                    <Link href="/profile" className="block">
+                                        <Button 
+                                            variant="outline"
+                                            className="w-full border-charcoal text-charcoal hover:bg-charcoal hover:text-white font-sora font-semibold rounded-none"
+                                        >
+                                            My Profile
+                                        </Button>
+                                    </Link>
                                     <Button 
                                         onClick={() => {
                                             router.push('/shop');
