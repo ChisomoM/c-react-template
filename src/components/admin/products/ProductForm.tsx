@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Loader2, Plus, Trash2, Upload, X } from 'lucide-react'
+import { Loader2, Plus, Trash2, Upload, X, Tags } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 
@@ -31,33 +31,44 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 import { SupabaseProductService } from '@/services/SupabaseProductService'
 import { SupabaseStorageService } from '@/services/SupabaseStorageService'
-import { Product, ProductVariant } from '@/services/types'
+import { SupabaseModifierService } from '@/services/SupabaseModifierService'
+import { Product, ProductVariant, Modifier } from '@/services/types'
 import { supabase } from '@/lib/supabase/client'
 // import { ManageStockDialog } from './ManageStockDialog'
 
-// Schema
+// Schema with explicit required types
 const productFormSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
   description: z.string().optional(),
-  price_zmw: z.coerce.number().min(0, 'Price must be positive'),
-  cost_price_zmw: z.coerce.number().min(0).optional(),
+  price_zmw: z.number().min(0, 'Price must be positive'),
+  cost_price_zmw: z.number().min(0).optional(),
   sku: z.string().optional(),
-  stock_quantity: z.coerce.number().int().min(0),
-  low_stock_threshold: z.coerce.number().int().min(0).default(10),
+  stock_quantity: z.number().int().min(0),
+  low_stock_threshold: z.number().int().min(0),
   category_id: z.string().optional(),
-  is_active: z.boolean().default(true),
-  track_inventory: z.boolean().default(true),
-  images: z.array(z.string()).default([]),
+  is_active: z.boolean(),
+  track_inventory: z.boolean(),
+  images: z.array(z.string()),
   variants: z.array(
     z.object({
-      id: z.string().optional(), // For existing variants
+      id: z.string().optional(),
       size: z.string().optional(),
       color: z.string().optional(),
-      stock_quantity: z.coerce.number().int().min(0),
-      cost_price_zmw: z.coerce.number().min(0).optional(),
+      stock_quantity: z.number().int().min(0),
+      cost_price_zmw: z.number().min(0).optional(),
       sku: z.string().optional(),
     })
   ).optional(),
@@ -75,9 +86,15 @@ export function ProductForm({ initialData }: ProductFormProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>(initialData?.images || [])
+  
+  // Modifiers state
+  const [allModifiers, setAllModifiers] = useState<Modifier[]>([])
+  const [selectedModifierIds, setSelectedModifierIds] = useState<string[]>([])
+  const [showModifierDialog, setShowModifierDialog] = useState(false)
 
   const productService = new SupabaseProductService()
   const storageService = new SupabaseStorageService()
+  const modifierService = new SupabaseModifierService()
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -120,16 +137,26 @@ export function ProductForm({ initialData }: ProductFormProps) {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: 'variants',
+    name: 'variants'
   })
 
   useEffect(() => {
-    // Fetch categories
-    const fetchCategories = async () => {
-      const { data } = await supabase.from('categories').select('id, name')
-      if (data) setCategories(data)
+    const fetchData = async () => {
+      // Fetch categories
+      const { data: categoriesData } = await supabase.from('categories').select('id, name')
+      if (categoriesData) setCategories(categoriesData)
+      
+      // Fetch all modifiers
+      const modifiers = await modifierService.getModifiers()
+      setAllModifiers(modifiers)
+      
+      // Set selected modifiers if editing
+      if (initialData?.modifiers) {
+        setSelectedModifierIds(initialData.modifiers.map(m => m.id))
+      }
     }
-    fetchCategories()
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,6 +238,16 @@ export function ProductForm({ initialData }: ProductFormProps) {
     } 
   }
 
+  const toggleModifier = (modifierId: string) => {
+    setSelectedModifierIds(prev => {
+      if (prev.includes(modifierId)) {
+        return prev.filter(id => id !== modifierId)
+      } else {
+        return [...prev, modifierId]
+      }
+    })
+  }
+
   const onSubmit = async (values: ProductFormValues) => {
     try {
       setIsUploading(true)
@@ -251,18 +288,42 @@ export function ProductForm({ initialData }: ProductFormProps) {
       
       const submissionImages = [...retainedUrls, ...uploadedUrls]
       
-      // Construct Payload
-      const payload = {
-          ...values,
+      // Construct Payload (exclude variants as they need separate handling)
+      const { variants, ...restValues } = values
+      const payload: Omit<typeof values, 'variants'> = {
+          ...restValues,
           images: submissionImages,
       }
 
+      let productId: string
+
       if (initialData) {
-        await productService.updateProduct(initialData.id, payload)
+        await productService.updateProduct(initialData.id, payload as any)
+        productId = initialData.id
         toast.success('Product updated')
       } else {
-        await productService.createProduct(payload)
+        const newProduct = await productService.createProduct(payload as any)
+        productId = newProduct.id
         toast.success('Product created')
+      }
+      
+      // Save modifier associations
+      if (productId) {
+        // Get current associations
+        const currentModifiers = await modifierService.getProductModifiers(productId)
+        const currentIds = currentModifiers.filter(m => !m.is_global).map(m => m.id)
+        
+        // Determine which to add and which to remove (exclude global modifiers)
+        const toAdd = selectedModifierIds.filter(id => !currentIds.includes(id))
+        const toRemove = currentIds.filter(id => !selectedModifierIds.includes(id))
+        
+        // Execute changes
+        if (toAdd.length > 0) {
+          await modifierService.bulkAssignModifiers(productId, toAdd)
+        }
+        if (toRemove.length > 0) {
+          await modifierService.bulkRemoveModifiers(productId, toRemove)
+        }
       }
       
       router.push('/admin/products')
@@ -378,7 +439,12 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 <FormItem>
                                 <FormLabel>Price (ZMW)</FormLabel>
                                 <FormControl>
-                                    <Input type="number" {...field} />
+                                    <Input 
+                                        type="number" 
+                                        step="0.01"
+                                        {...field}
+                                        onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -391,7 +457,12 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 <FormItem>
                                 <FormLabel>Cost Price (Optional)</FormLabel>
                                 <FormControl>
-                                    <Input type="number" {...field} />
+                                    <Input 
+                                        type="number" 
+                                        step="0.01"
+                                        {...field}
+                                        onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                    />
                                 </FormControl>
                                 <FormDescription>For profit calculation</FormDescription>
                                 <FormMessage />
@@ -446,7 +517,11 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                             <FormItem>
                                             <FormLabel className="text-xs">Stock</FormLabel>
                                             <FormControl>
-                                                <Input type="number" {...field} />
+                                                <Input 
+                                                    type="number" 
+                                                    {...field}
+                                                    onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                                />
                                             </FormControl>
                                             </FormItem>
                                         )}
@@ -477,6 +552,56 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         ))}
                         {fields.length === 0 && (
                              <p className="text-sm text-gray-500 italic">No variants added. Product will use main inventory.</p>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Modifiers Section */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Modifiers</CardTitle>
+                        <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setShowModifierDialog(true)}
+                        >
+                            <Tags className="h-4 w-4 mr-2" /> Select Modifiers
+                        </Button>
+                    </CardHeader>
+                    <CardContent>
+                        {selectedModifierIds.length === 0 ? (
+                            <p className="text-sm text-gray-500 italic">
+                                No modifiers assigned. Global modifiers are automatically available.
+                            </p>
+                        ) : (
+                            <div className="space-y-2">
+                                {allModifiers
+                                    .filter(m => selectedModifierIds.includes(m.id))
+                                    .map(modifier => (
+                                        <div key={modifier.id} className="flex items-center justify-between border p-3 rounded-md">
+                                            <div className="flex-1">
+                                                <p className="font-medium text-sm">{modifier.name}</p>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs text-gray-600">
+                                                        +K{modifier.price_zmw.toFixed(2)}
+                                                    </span>
+                                                    {modifier.is_global && (
+                                                        <Badge variant="secondary" className="text-xs">Global</Badge>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => toggleModifier(modifier.id)}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                            </div>
                         )}
                     </CardContent>
                 </Card>
@@ -518,7 +643,11 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <FormItem>
                                         <FormLabel>Stock Quantity</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} />
+                                            <Input 
+                                                type="number" 
+                                                {...field}
+                                                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                         </FormItem>
@@ -531,7 +660,11 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         <FormItem>
                                         <FormLabel>Low Stock Threshold</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} />
+                                            <Input 
+                                                type="number" 
+                                                {...field}
+                                                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            />
                                         </FormControl>
                                         <FormDescription>Alert when stock is below this</FormDescription>
                                         <FormMessage />
@@ -594,6 +727,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         type="button"
                                         onClick={() => removeImage(index)}
                                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                        aria-label="Remove image"
                                     >
                                         <X className="h-4 w-4" />
                                     </button>
@@ -615,6 +749,70 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 </Card>
             </div>
         </div>
+
+        {/* Modifier Selection Dialog */}
+        <Dialog open={showModifierDialog} onOpenChange={setShowModifierDialog}>
+          <DialogContent className="max-w-2xl max-h-[600px] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Select Modifiers</DialogTitle>
+              <DialogDescription>
+                Choose which modifiers should be available for this product. Global modifiers are available automatically.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 py-4">
+              {allModifiers.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Tags className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                  <p>No modifiers available.</p>
+                  <p className="text-sm mt-1">Create modifiers first in the Modifiers section.</p>
+                </div>
+              ) : (
+                allModifiers.map(modifier => (
+                  <div
+                    key={modifier.id}
+                    className="flex items-center space-x-3 border p-4 rounded-lg hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleModifier(modifier.id)}
+                  >
+                    <Checkbox
+                      checked={selectedModifierIds.includes(modifier.id) || modifier.is_global}
+                      disabled={modifier.is_global}
+                      onCheckedChange={() => toggleModifier(modifier.id)}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">{modifier.name}</p>
+                        {modifier.is_global && (
+                          <Badge variant="secondary" className="text-xs">Global</Badge>
+                        )}
+                        {!modifier.is_active && (
+                          <Badge variant="outline" className="text-xs">Inactive</Badge>
+                        )}
+                      </div>
+                      {modifier.description && (
+                        <p className="text-sm text-gray-600 mt-1">{modifier.description}</p>
+                      )}
+                      <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                        <span>+K{modifier.price_zmw.toFixed(2)}</span>
+                        {modifier.track_inventory && (
+                          <span>Stock: {modifier.stock_quantity}</span>
+                        )}
+                        <span>Limits: {modifier.min_quantity}-{modifier.max_quantity}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setShowModifierDialog(false)}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={() => setShowModifierDialog(false)}>
+                Done
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </form>
     </Form>
   )

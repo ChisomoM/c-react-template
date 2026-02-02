@@ -9,13 +9,22 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight, Package, ShoppingCart, Users, User, Store } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { LogOut, LayoutDashboard, ChevronLeft, ChevronRight, Package, ShoppingCart, Users, User, Store, Tags } from 'lucide-react';
 import { useAuth } from '@/lib/context/useAuth';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [productsAccordionOpen, setProductsAccordionOpen] = useState(
+    pathname?.startsWith('/admin/products') || pathname?.startsWith('/admin/modifiers')
+  );
 
   const isActive = (path: string) => pathname === path;
 
@@ -98,19 +107,53 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname?.startsWith('/admin/products')}
-                      className={`text-gray-300 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora ${
-                        isCollapsed ? 'justify-center px-2' : ''
-                      }`}
-                      title={isCollapsed ? 'Products' : ''}
+                    <Accordion 
+                      type="single" 
+                      collapsible 
+                      className="w-full"
+                      value={productsAccordionOpen ? "products" : ""}
+                      onValueChange={(value) => setProductsAccordionOpen(value === "products")}
                     >
-                      <Link href="/admin/products" className="flex items-center gap-4 py-3 px-3">
-                        <Package className="h-5 w-5 flex-shrink-0" />
-                        {!isCollapsed && <span className="font-medium">Products</span>}
-                      </Link>
-                    </SidebarMenuButton>
+                      <AccordionItem value="products" className="border-none">
+                        <AccordionTrigger
+                          className={`text-gray-300 hover:bg-gray-900 hover:text-white rounded-lg transition-all duration-300 font-sora px-3 py-3 hover:no-underline w-full text-left [&>svg]:h-4 [&>svg]:w-4 ${
+                            isCollapsed ? 'justify-center px-2' : ''
+                          } ${pathname?.startsWith('/admin/products') || pathname?.startsWith('/admin/modifiers') ? 'bg-gold-primary text-charcoal hover:bg-gold-primary hover:text-charcoal [&>svg]:text-charcoal' : 'hover:bg-gray-900 hover:text-white [&>svg]:text-gray-300'}`}
+                          title={isCollapsed ? 'Products' : ''}
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <Package className="h-5 w-5 flex-shrink-0" />
+                            {!isCollapsed && <span className="font-medium">Products</span>}
+                          </div>
+                        </AccordionTrigger>
+                        {!isCollapsed && (
+                          <AccordionContent className="pb-0">
+                            <div className="ml-9 mt-2 space-y-1">
+                              <SidebarMenuButton
+                                asChild
+                                isActive={pathname?.startsWith('/admin/products')}
+                                className="text-gray-400 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora px-3 py-2 text-sm"
+                              >
+                                <Link href="/admin/products" className="flex items-center gap-3">
+                                  <Package className="h-4 w-4 flex-shrink-0" />
+                                  <span className="font-medium">Products</span>
+                                </Link>
+                              </SidebarMenuButton>
+                              <SidebarMenuButton
+                                asChild
+                                isActive={pathname?.startsWith('/admin/modifiers')}
+                                className="text-gray-400 hover:bg-gray-900 hover:text-white data-[active=true]:bg-gold-primary data-[active=true]:text-charcoal rounded-lg transition-all duration-300 font-sora px-3 py-2 text-sm"
+                              >
+                                <Link href="/admin/modifiers" className="flex items-center gap-3">
+                                  <Tags className="h-4 w-4 flex-shrink-0" />
+                                  <span className="font-medium">Modifiers</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </div>
+                          </AccordionContent>
+                        )}
+                      </AccordionItem>
+                    </Accordion>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>

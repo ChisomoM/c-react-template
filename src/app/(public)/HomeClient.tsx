@@ -270,10 +270,10 @@ function MasonryCard({
 // Shop by Category Section
 function ShopByCategory() {
   const categories = [
-    { name: 'Men', image: '/images/suit-hero.png', link: '/shop?category=men' },
+    { name: 'Men', image: '/images/shirt 3.png', link: '/shop?category=men' },
     { name: 'Women', image: '/images/lady1.png', link: '/shop?category=women' },
-    { name: 'Kids', image: '/images/kids.png', link: '/shop?category=kids' },
-    { name: 'Featured', image: '/images/hat1.png', link: '/shop?category=featured' },
+    { name: 'Accessories', image: '/images/hat1.png', link: '/shop?category=accessories' },
+    { name: 'Featured', image: '/images/suit-hero.jpg', link: '/shop?category=featured' },
   ]
 
   const sectionRef = useRef<HTMLDivElement>(null)

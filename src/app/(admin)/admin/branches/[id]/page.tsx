@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { SupabaseBranchService } from '@/services/SupabaseBranchService'
 import { Branch, BranchStaff } from '@/services/types'
 import { Button } from '@/components/ui/button'
@@ -20,13 +20,9 @@ export default function BranchDetailsPage() {
   const [branch, setBranch] = useState<Branch | null>(null)
   const [staff, setStaff] = useState<BranchStaff[]>([])
   const [loading, setLoading] = useState(true)
-  const branchService = new SupabaseBranchService()
 
-  useEffect(() => {
-    if (id) loadData()
-  }, [id])
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
+    const branchService = new SupabaseBranchService()
     setLoading(true)
     try {
       const b = await branchService.getBranch(id)
@@ -40,10 +36,15 @@ export default function BranchDetailsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    if (id) loadData()
+  }, [id, loadData])
 
   const handleRemoveStaff = async (userId: string) => {
     if (!confirm('Are you sure you want to remove this staff member?')) return
+    const branchService = new SupabaseBranchService()
     try {
       await branchService.removeStaff(id, userId)
       loadData()
@@ -161,7 +162,7 @@ function AddStaffDialog({ branchId, onSuccess }: any) {
       <DialogTrigger asChild>
         <Button size="sm">Assign Staff</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>Assign Staff Member</DialogTitle>
         </DialogHeader>

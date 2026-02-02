@@ -37,6 +37,7 @@ export interface Product {
   is_active?: boolean
   created_at?: string
   variants?: ProductVariant[]
+  modifiers?: Modifier[] // Available modifiers for this product
 }
 
 export interface ProductVariant {
@@ -48,6 +49,32 @@ export interface ProductVariant {
   sku?: string
   cost_price_zmw?: number
   stock_adjustment?: number // Deprecated, kept for compat
+}
+
+export interface Modifier {
+  id: string
+  name: string
+  description?: string
+  price_zmw: number
+  cost_price_zmw?: number
+  track_inventory: boolean
+  stock_quantity: number
+  low_stock_threshold?: number
+  min_quantity: number
+  max_quantity: number
+  is_active: boolean
+  is_global: boolean
+  sku?: string
+  sort_order: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface SelectedModifier {
+  modifier_id: string
+  quantity: number
+  name?: string // For display in cart/orders
+  price?: number // For display in cart/orders
 }
 
 export interface InventoryLog {
@@ -96,6 +123,7 @@ export interface CartItem {
     size?: string
     color?: string
   }
+  modifiers?: SelectedModifier[] // Selected modifiers with quantities
   product?: Product
 }
 
@@ -127,6 +155,12 @@ export interface OrderItem {
   quantity: number
   price_at_purchase: number
   variant_selection?: any
+  modifiers?: Array<{
+    modifier_id: string
+    name: string
+    quantity: number
+    price_at_purchase: number
+  }> // Modifier snapshot at purchase time
 }
 
 export interface IAuthService {
@@ -147,6 +181,13 @@ export interface IProductService {
   adjustStock(productId: string, variantId: string | null, amount: number, reason: string, note?: string): Promise<void>
   getInventoryLogs(limit?: number): Promise<InventoryLog[]>
   getLowStockProducts(): Promise<Product[]>
+}
+
+export interface IUserService {
+  getAllUsers(): Promise<User[]>
+  getUserById(id: string): Promise<User | null>
+  updateUser(id: string, user: Partial<User>): Promise<User>
+  deleteUser(id: string): Promise<void>
 }
 
 export interface IComboService {
@@ -209,6 +250,24 @@ export interface IBranchService {
 
   getBranchInventory(branchId: string, productId: string): Promise<BranchInventory[]>
   updateBranchStock(branchId: string, productId: string, variantId: string | undefined | null, quantity: number): Promise<void>
+}
+
+export interface IModifierService {
+  // CRUD operations
+  getModifiers(): Promise<Modifier[]>
+  getModifier(id: string): Promise<Modifier | null>
+  createModifier(modifier: Partial<Modifier>): Promise<Modifier>
+  updateModifier(id: string, modifier: Partial<Modifier>): Promise<Modifier>
+  deleteModifier(id: string): Promise<void>
+  
+  // Product associations
+  getProductModifiers(productId: string): Promise<Modifier[]>
+  assignModifierToProduct(productId: string, modifierId: string): Promise<void>
+  removeModifierFromProduct(productId: string, modifierId: string): Promise<void>
+  
+  // Stock management
+  adjustModifierStock(modifierId: string, amount: number, reason: string, note?: string): Promise<void>
+  getLowStockModifiers(): Promise<Modifier[]>
 }
 
 

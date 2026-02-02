@@ -23,6 +23,21 @@ export class SupabaseProductService implements IProductService {
       throw new Error(error.message)
     }
 
+    // Fetch global modifiers for all products
+    if (data && data.length > 0) {
+      const { data: globalModifiers } = await supabase
+        .from('modifiers')
+        .select('*')
+        .eq('is_global', true)
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      
+      // Attach global modifiers to all products
+      data.forEach(product => {
+        product.modifiers = globalModifiers || []
+      })
+    }
+
     return data || []
   }
 
@@ -38,6 +53,19 @@ export class SupabaseProductService implements IProductService {
 
     if (error) {
       throw new Error(error.message)
+    }
+
+    // Fetch all modifiers for admin view
+    if (data && data.length > 0) {
+      const { data: allModifiers } = await supabase
+        .from('modifiers')
+        .select('*')
+        .order('sort_order', { ascending: true })
+      
+      // Attach all modifiers to products for admin view
+      data.forEach(product => {
+        product.modifiers = allModifiers || []
+      })
     }
 
     return data || []
@@ -59,6 +87,18 @@ export class SupabaseProductService implements IProductService {
         return null // Not found
       }
       throw new Error(error.message)
+    }
+
+    // Fetch modifiers (both global and product-specific)
+    if (data) {
+      const { data: modifiers } = await supabase
+        .from('modifiers')
+        .select('*')
+        .or(`is_global.eq.true,id.in.(select modifier_id from product_modifiers where product_id.eq.${id})`)
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      
+      data.modifiers = modifiers || []
     }
 
     return data
