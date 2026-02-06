@@ -9,13 +9,14 @@ export class SupabaseCartService implements ICartService {
       throw new Error('User must be logged in to add items to cart')
     }
 
-    // Check if item already exists
+    // Check if item already exists with same variant and modifiers
     const { data: existingItem } = await supabase
       .from('cart_items')
       .select('*')
       .eq('user_id', user.id)
       .eq('product_id', item.product_id)
       .eq('variant_selection', JSON.stringify(item.variant_selection || {}))
+      .eq('modifiers', JSON.stringify(item.modifiers || []))
       .single()
 
     if (existingItem) {
@@ -37,6 +38,7 @@ export class SupabaseCartService implements ICartService {
           product_id: item.product_id,
           quantity: item.quantity,
           variant_selection: item.variant_selection || null,
+          modifiers: item.modifiers || null,
         })
 
       if (error) {
@@ -94,6 +96,7 @@ export class SupabaseCartService implements ICartService {
       product_id: item.product_id,
       quantity: item.quantity,
       variant_selection: item.variant_selection,
+      modifiers: item.modifiers || [],
       product: item.product,
     }))
   }

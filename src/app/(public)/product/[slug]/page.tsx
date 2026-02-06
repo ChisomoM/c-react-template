@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { SupabaseProductService } from '@/services/SupabaseProductService'
-import { Product, ProductVariant } from '@/services/types'
+import { Product, ProductVariant, Modifier, SelectedModifier } from '@/services/types'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/lib/context/cart'
 import { toast } from 'sonner'
@@ -38,6 +38,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   const [showNotifyModal, setShowNotifyModal] = useState(false)
   const [notifyEmail, setNotifyEmail] = useState('')
   const [playingVideo, setPlayingVideo] = useState(false)
+  const [selectedModifiers, setSelectedModifiers] = useState<Map<string, number>>(new Map())
   
   const productService = new SupabaseProductService()
   const { addItem } = useCart()
@@ -109,6 +110,20 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
       v => v.color === selectedColor && v.size === selectedSize
     )
 
+    // Build modifiers array
+    const modifiers: SelectedModifier[] = []
+    selectedModifiers.forEach((qty, modifierId) => {
+      const modifier = product.modifiers?.find(m => m.id === modifierId)
+      if (modifier && qty > 0) {
+        modifiers.push({
+          modifier_id: modifierId,
+          quantity: qty,
+          name: modifier.name,
+          price: modifier.price_zmw
+        })
+      }
+    })
+
     try {
       setIsAddingToCart(true)
       await addItem({
@@ -118,6 +133,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
           color: selectedColor || undefined,
           size: selectedSize || undefined,
         },
+        modifiers: modifiers.length > 0 ? modifiers : undefined,
       })
       toast.success('Added to cart', {
         description: `${quantity} × ${product.title}`,
@@ -198,6 +214,59 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   }
 
   const currentStock = getCurrentStock()
+
+  // Modifier handlers
+  const handleModifierChange = (modifierId: string, quantity: number) => {
+    const modifier = product?.modifiers?.find(m => m.id === modifierId)
+    if (!modifier) return
+
+    // Enforce min/max limits
+    const validQuantity = Math.max(
+      modifier.min_quantity,
+      Math.min(quantity, modifier.max_quantity)
+    )
+
+    setSelectedModifiers(prev => {
+      const newMap = new Map(prev)
+      if (validQuantity === 0) {
+        newMap.delete(modifierId)
+      } else {
+        newMap.set(modifierId, validQuantity)
+      }
+      return newMap
+    })
+  }
+
+  const toggleModifier = (modifierId: string) => {
+    const modifier = product?.modifiers?.find(m => m.id === modifierId)
+    if (!modifier) return
+
+    const currentQty = selectedModifiers.get(modifierId) || 0
+    if (currentQty > 0) {
+      handleModifierChange(modifierId, 0)
+    } else {
+      handleModifierChange(modifierId, Math.max(1, modifier.min_quantity))
+    }
+  }
+
+  // Calculate total price including modifiers
+  const calculateTotalPrice = () => {
+    if (!product) return 0
+
+    let total = product.price_zmw * quantity
+
+    // Add modifier prices
+    selectedModifiers.forEach((qty, modifierId) => {
+      const modifier = product.modifiers?.find(m => m.id === modifierId)
+      if (modifier) {
+        total += modifier.price_zmw * qty * quantity // Multiply by product quantity
+      }
+    })
+
+    return total
+  }
+
+  const totalPrice = calculateTotalPrice()
 
   // Status badges
   const getStatusBadges = () => {
@@ -501,6 +570,108 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               </div>
             )}
 
+            {/* Modifiers / Add-ons */}
+            {product.modifiers && product.modifiers.length > 0 && (
+              <div className="pb-6 border-b border-gray-300">
+                <label className="font-sora font-semibold text-sm text-charcoal mb-3 block">
+                  Add-ons & Extras
+                </label>
+                <div className="space-y-3">
+                  {product.modifiers.map((modifier) => {
+                    const selectedQty = selectedModifiers.get(modifier.id) || 0
+                    const isSelected = selectedQty > 0
+                    
+                    // Check if modifier has enough stock
+                    const hasStock = !modifier.track_inventory || 
+                                    (modifier.stock_quantity && modifier.stock_quantity > 0)
+
+                    return (
+                      <motion.div
+                        key={modifier.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`border-2 p-4 transition-all duration-300 ${
+                          isSelected 
+                            ? 'border-gold-primary bg-gold-light/10' 
+                            : 'border-gray-300 hover:border-gray-400'
+                        } ${!hasStock ? 'opacity-50' : ''}`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <button
+                                type="button"
+                                onClick={() => hasStock && toggleModifier(modifier.id)}
+                                disabled={!hasStock}
+                                className={`h-5 w-5 border-2 flex items-center justify-center transition-all ${
+                                  isSelected 
+                                    ? 'border-gold-primary bg-gold-primary' 
+                                    : 'border-gray-400 hover:border-gold-primary'
+                                } ${!hasStock ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                aria-label={`Toggle ${modifier.name}`}
+                              >
+                                {isSelected && <Check className="h-3 w-3 text-white" />}
+                              </button>
+                              <h4 className="font-sora font-semibold text-sm text-charcoal">
+                                {modifier.name}
+                              </h4>
+                              <span className="font-sora font-medium text-sm text-gold-dark">
+                                +K{modifier.price_zmw.toFixed(2)}
+                              </span>
+                            </div>
+                            
+                            {modifier.description && (
+                              <p className="text-xs text-gray-600 mb-2 ml-7">
+                                {modifier.description}
+                              </p>
+                            )}
+
+                            <div className="flex items-center gap-3 text-xs text-gray-500 ml-7">
+                              {modifier.track_inventory && (
+                                <span>
+                                  Stock: {modifier.stock_quantity}
+                                  {modifier.stock_quantity && modifier.stock_quantity <= (modifier.low_stock_threshold || 10) && (
+                                    <span className="text-orange-600 ml-1">(Low)</span>
+                                  )}
+                                </span>
+                              )}
+                              {!hasStock && <span className="text-red-600">Out of Stock</span>}
+                            </div>
+                          </div>
+
+                          {/* Quantity Controls */}
+                          {isSelected && modifier.max_quantity > 1 && (
+                            <div className="flex items-center border border-gray-300">
+                              <button
+                                onClick={() => handleModifierChange(modifier.id, selectedQty - 1)}
+                                disabled={selectedQty <= modifier.min_quantity}
+                                className="px-3 py-1 hover:bg-cream transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                aria-label="Decrease modifier quantity"
+                              >
+                                <Minus className="h-3 w-3 text-charcoal" />
+                              </button>
+                              <span className="w-12 text-center font-sora font-semibold text-sm text-charcoal">
+                                {selectedQty}
+                              </span>
+                              <button
+                                onClick={() => handleModifierChange(modifier.id, selectedQty + 1)}
+                                disabled={selectedQty >= modifier.max_quantity || 
+                                         (modifier.track_inventory && selectedQty >= (modifier.stock_quantity || 0))}
+                                className="px-3 py-1 hover:bg-cream transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                aria-label="Increase modifier quantity"
+                              >
+                                <Plus className="h-3 w-3 text-charcoal" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Quantity & Actions */}
             <div className="space-y-4">
               <div className="flex items-center gap-6">
@@ -530,6 +701,38 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                   {currentStock} available
                 </span>
               </div>
+
+              {/* Total Price with Modifiers */}
+              {selectedModifiers.size > 0 && (
+                <div className="bg-cream p-4 space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-sora text-gray-600">Product ({quantity}×)</span>
+                    <span className="font-sora font-medium text-charcoal">
+                      K{(product.price_zmw * quantity).toFixed(2)}
+                    </span>
+                  </div>
+                  {Array.from(selectedModifiers.entries()).map(([modifierId, qty]) => {
+                    const modifier = product.modifiers?.find(m => m.id === modifierId)
+                    if (!modifier) return null
+                    return (
+                      <div key={modifierId} className="flex justify-between items-center text-sm">
+                        <span className="font-sora text-gray-600">
+                          {modifier.name} ({qty}× per item)
+                        </span>
+                        <span className="font-sora font-medium text-charcoal">
+                          +K{(modifier.price_zmw * qty * quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    )
+                  })}
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-300">
+                    <span className="font-sora font-semibold text-charcoal">Total</span>
+                    <span className="font-sora font-bold text-xl text-gold-dark">
+                      K{totalPrice.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="space-y-3">

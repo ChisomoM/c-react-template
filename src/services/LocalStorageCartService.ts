@@ -6,10 +6,11 @@ const STORAGE_KEY = 'guest_cart'
 export class LocalStorageCartService implements ICartService {
   async addItem(item: CartItem): Promise<void> {
     const items = this.getItems()
-    // Logic to merge same product same variant
+    // Logic to merge same product same variant and modifiers
     const existingIndex = items.findIndex(i => 
       i.product_id === item.product_id && 
-      JSON.stringify(i.variant_selection) === JSON.stringify(item.variant_selection)
+      JSON.stringify(i.variant_selection) === JSON.stringify(item.variant_selection) &&
+      JSON.stringify(i.modifiers) === JSON.stringify(item.modifiers)
     )
 
     if (existingIndex > -1) {

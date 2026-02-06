@@ -14,7 +14,17 @@ export default function CartPage() {
   const router = useRouter()
 
   const subtotal = items.reduce((sum, item) => {
-    return sum + (item.product?.price_zmw || 0) * item.quantity
+    let itemTotal = (item.product?.price_zmw || 0) * item.quantity
+    
+    // Add modifier costs
+    if (item.modifiers && item.modifiers.length > 0) {
+      const modifierTotal = item.modifiers.reduce((modSum, mod) => {
+        return modSum + (mod.price * mod.quantity * item.quantity)
+      }, 0)
+      itemTotal += modifierTotal
+    }
+    
+    return sum + itemTotal
   }, 0)
 
   if (isLoading) {
@@ -66,11 +76,36 @@ export default function CartPage() {
                   <div className="flex justify-between">
                     <div>
                       <h3 className="font-semibold">{item.product?.title || 'Unknown Product'}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-1">{item.product?.description}</p>
+                      {item.variant_selection && (item.variant_selection.color || item.variant_selection.size) && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {item.variant_selection.color && `Color: ${item.variant_selection.color}`}
+                          {item.variant_selection.color && item.variant_selection.size && ' • '}
+                          {item.variant_selection.size && `Size: ${item.variant_selection.size}`}
+                        </p>
+                      )}
+                      {item.modifiers && item.modifiers.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {item.modifiers.map((mod, idx) => (
+                            <p key={idx} className="text-xs text-gray-600">
+                              + {mod.name} ({mod.quantity}×) - K{(mod.price * mod.quantity).toFixed(2)}
+                            </p>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <p className="font-semibold">
-                      ZMW {((item.product?.price_zmw || 0) * item.quantity).toFixed(2)}
-                    </p>
+                    <div className="text-right">
+                      <p className="font-semibold">
+                        K{(
+                          ((item.product?.price_zmw || 0) * item.quantity) +
+                          (item.modifiers?.reduce((sum, mod) => sum + (mod.price * mod.quantity * item.quantity), 0) || 0)
+                        ).toFixed(2)}
+                      </p>
+                      {item.modifiers && item.modifiers.length > 0 && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Base: K{((item.product?.price_zmw || 0) * item.quantity).toFixed(2)}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="flex items-center justify-between mt-4">
