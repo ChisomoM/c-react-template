@@ -9,10 +9,9 @@ export default function Navbar(){
     
     const navItems = [
         {name: 'Home', href: '#home'},
-        {name: 'API', href: '#api'},
         {name: 'Features', href: '#features'},
-        // {name: 'About', href: '#about'},
-        // {name: 'Contact', href: '#contact'}
+        {name: 'About', href: '#about'},
+        {name: 'Contact', href: '#contact'}
     ];
 
     // Active state highlighting can be added later (e.g., via IntersectionObserver)

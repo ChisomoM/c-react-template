@@ -17,40 +17,28 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
-    'Platform': [
-      { label: 'API Documentation', href: '#docs' },
-    //   { label: 'SDKs & Libraries', href: '#sdks' },
-      { label: 'Integration Guide', href: '#guide' },
-    //   { label: 'Rate Limits', href: '#limits' },
-    //   { label: 'Status Page', href: '#status' }
-    ],
-    'Services': [
-      { label: 'Airtime Top-up', href: '#airtime' },
-      { label: 'Data Bundles', href: '#data' },
-      { label: 'Bill Payments', href: '#bills' },
-      { label: 'e-toll Payment', href: '#transfer' },
-    //   { label: 'Bulk Operations', href: '#bulk' }
+    'Product': [
+      { label: 'Features', href: '#features' },
+      { label: 'Pricing', href: '#pricing' },
+      { label: 'API', href: '#api' },
+      { label: 'Documentation', href: '#docs' }
     ],
     'Company': [
-      { label: 'Probase', href: 'https://pbsdemo.probasegroup.com' },
-    //   { label: 'Our Team', href: '#team' },
-    //   { label: 'Careers', href: '#careers' },
-    //   { label: 'Press Kit', href: '#press' },
-    //   { label: 'Contact', href: '#contact' }
+      { label: 'About', href: '#about' },
+      { label: 'Blog', href: '#blog' },
+      { label: 'Careers', href: '#careers' },
+      { label: 'Contact', href: '#contact' }
     ],
-    // 'Resources': [
-    //   { label: 'Blog', href: '#blog' },
-    //   { label: 'Case Studies', href: '#cases' },
-    //   { label: 'Help Center', href: '#help' },
-    //   { label: 'Community', href: '#community' },
-    //   { label: 'Webinars', href: '#webinars' }
-    // ],
+    'Resources': [
+      { label: 'Help Center', href: '#help' },
+      { label: 'Community', href: '#community' },
+      { label: 'Case Studies', href: '#cases' },
+      { label: 'Webinars', href: '#webinars' }
+    ],
     'Legal': [
       { label: 'Privacy Policy', href: '#privacy' },
       { label: 'Terms of Service', href: '#terms' },
-      { label: 'Cookie Policy', href: '#cookies' },
-    //   { label: 'Compliance', href: '#compliance' },
-    //   { label: 'Security', href: '#security' }
+      { label: 'Cookie Policy', href: '#cookies' }
     ]
   };
 
@@ -94,10 +82,11 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <h2 className="text-2xl font-bold">
-                Smart<span className="text-orange-500">Hub</span>
+                Your<span className="text-blue">Company</span>
               </h2>
               <p className="text-gray-400 mt-2">
-                Empowering businesses and individuals across Africa with seamless payment 
+                Building premium solutions for modern businesses. 
+                Experience the difference with our innovative platform. 
                 infrastructure and reliable financial services.
               </p>
             </div>

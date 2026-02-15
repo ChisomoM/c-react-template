@@ -4,11 +4,13 @@ A modern React template with authentication, routing, admin dashboard, and publi
 
 ## Features
 
-- **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth)
-- **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics
-- **Public Pages**: Landing page with hero section, features, API documentation, and contact forms
-- **SEO Optimization**: Generic SEO component for managing meta tags, Open Graph, and Twitter Cards
-- **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components
+- **Quiet Premium Design System**: A refined, modern design with a focused color palette (Blue, Charcoal, Cream) and neutral Inter typography.
+- **Authentication System**: Login/logout with JWT tokens, protected routes based on account types (can be replaced with Firebase Auth).
+- **Admin Dashboard**: Comprehensive admin interface with sidebar navigation, user management, and analytics.
+- **Public Pages**: Modern landing page with a hero section, staggered feature grid, and integrated animations.
+- **Smooth Motion**: Native support for scroll-linked and entry animations using Framer Motion.
+- **SEO Optimization**: Generic SEO component for managing meta tags, Open Graph, and Twitter Cards.
+- **Responsive Design**: Mobile-first design using Tailwind CSS and Radix UI components.
 - **TypeScript**: Full type safety throughout the application
 - **Modern Tooling**: Vite for fast development, ESLint for code quality, and pnpm for package management
 - **Routing**: Client-side routing with React Router, including nested routes and protected access
@@ -16,15 +18,23 @@ A modern React template with authentication, routing, admin dashboard, and publi
 
 ## Tech Stack
 
-- **Frontend**: React 18, TypeScript
+- **Frontend**: React 19, TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS, Radix UI
-- **Routing**: React Router DOM
+- **Animations**: Framer Motion
+- **Routing**: React Router DOM (v7)
 - **State Management**: React Context (for auth)
 - **Backend (Optional)**: Firebase (Auth, Firestore, Storage)
 - **Icons**: Lucide React
-- **Forms**: Custom form components with validation
 - **Notifications**: Sonner for toast notifications
+
+## Design System
+
+The template follows a **Quiet Premium** design philosophy:
+- **Colors**: Charcoal for primary text, Gray-dark for body, Blue for CTAs, and Cream/White for section backgrounds.
+- **Typography**: Uses the **Inter** font family for a clean, neutral, and professional look.
+- **Motion**: Noticeable but non-distracting animations with a focus on smooth page entry and scroll-linked events.
+- **Spacing**: Generous padding and wide-set layouts to ensure content has room to breathe.
 
 ## Getting Started
 
@@ -76,88 +86,75 @@ pnpm lint
 ```
 src/
 ├── (admin)/
-│   └── merchant/
-│       ├── LoginPage.tsx          # Admin login page
-│       └── merchantDashboard.tsx  # Admin dashboard (renamed to AdminDashboard)
+│   └── admin/
+│       ├── Admin.tsx              # Main Admin Dashboard
+│       └── LoginPage.tsx          # Admin login page
 ├── (public)/
 │   └── home/
-│       ├── home.tsx               # Public home page
-│       └── components/            # Home page components (hero, features, etc.)
+│       ├── home.tsx               # Premium landing page
+│       └── components/            # Page sections (hero, features, etc.)
 ├── components/
-│   ├── ui/                        # Reusable UI components (buttons, cards, etc.)
+│   ├── ui/                        # Reusable UI components (Radix UI wrappers)
 │   ├── auth/                      # Authentication components
 │   ├── footer.tsx                 # Site footer
 │   ├── navbar.tsx                 # Navigation bar
 │   └── ...
 ├── layouts/
-│   ├── AdminLayout.tsx            # Layout for admin pages
+│   ├── AdminLayout.tsx            # Layout for protected admin areas
 │   └── MainLayout.tsx             # Layout for public pages
 ├── lib/
-│   ├── context/                   # React contexts (auth, etc.)
-│   ├── api/                       # API utilities and endpoints
-│   └── utils.ts                   # Utility functions
+│   ├── context/                   # Global state (Auth, User)
+│   ├── api/                       # API utilities (crud, endpoints)
+│   ├── firebase/                  # Optional Firebase service layer
+│   └── utils.ts                   # Tailwind merge and class utilities
 ├── types/
 │   └── auth.ts                    # TypeScript type definitions
 └── assets/                        # Static assets (logos, images)
 ```
 
-## Key Components
+## Architecture & Key Components
 
-### Authentication
-- **AuthContext**: Manages user authentication state
-- **ProtectedRoute**: Wraps routes that require authentication
-- **LoginForm**: Handles user login with email/password
-
-### Routing
-- Public routes: `/` (home), `/login`
-- Admin routes: `/admin/dashboard` (protected)
-
-### UI Components
-- Built with Radix UI primitives for accessibility
-- Custom components for forms, navigation, and layouts
-- Responsive design with Tailwind CSS
-
-### SEO Component
-
-The template includes a generic SEO component for managing meta tags, Open Graph, and Twitter Cards. It's built using `react-helmet-async` for dynamic document head management.
+### API & Data Fetching
+The project uses a structured approach for data fetching to ensure consistency across the application.
+- **`fetchData`**: A custom utility in `@/lib/api/crud` that automatically attaches Bearer tokens from storage and handles common error scenarios.
+- **Endpoint Mapping**: All API paths are defined in `@/lib/api/end_points.tsx` within the `API` object. This makes it easy to update URLs in one place.
+- **Parameterized Routes**: The `pipe` utility allows for dynamic URL generation (e.g., `users/:id`).
 
 **Usage:**
+```typescript
+import { fetchData } from '@/lib/api/crud';
 
+// GET request
+const data = await fetchData('SOME_ENDPOINT_KEY', 'GET');
+
+// POST request with payload
+await fetchData('SOME_ENDPOINT_KEY', 'POST', {}, payload);
+```
+
+### Authentication & Security
+- **Auth Context**: The `AuthContext` (managed via `useAuth()`) provides access to the current `user`, `tokens`, and methods like `login` and `logout`.
+- **Protected Routes**: Wrap routes with the `<ProtectedRoute>` component to restrict access to authenticated users.
+- **Persistence**: Auth tokens and user data are persisted in `localStorage` using keys defined in `STORAGE_KEYS` (`auth_tokens`, `auth_user`).
+
+### SEO Optimization
+The template includes a generic SEO component for managing meta tags, Open Graph, and Twitter Cards using `react-helmet-async`.
+
+**Usage:**
 ```tsx
 import SEO from '../components/SEO';
 
-function MyPage() {
-  return (
-    <>
-      <SEO
-        title="Page Title"
-        description="Page description for search engines"
-        keywords="keyword1, keyword2, keyword3"
-        image="https://example.com/image.jpg"
-        url="https://example.com/page"
-        type="website"
-        siteName="Your Site Name"
-        twitterCard="summary_large_image"
-        canonical="https://example.com/page"
-      />
-      {/* Your page content */}
-    </>
-  );
-}
+<SEO
+  title="Page Title"
+  description="Page description"
+  keywords="key1, key2"
+  type="website"
+/>
 ```
 
-**Props:**
-
-- `title`: Page title (defaults to "Default Title")
-- `description`: Meta description
-- `keywords`: Comma-separated keywords
-- `image`: URL for Open Graph/Twitter image
-- `url`: Canonical URL (defaults to current URL)
-- `type`: Open Graph type (defaults to "website")
-- `siteName`: Site name for Open Graph
-- `twitterCard`: Twitter card type (defaults to "summary_large_image")
-- `canonical`: Canonical URL
-- `children`: Additional head elements
+### UI Components
+- **Radix UI**: Built on Radix UI primitives for high accessibility.
+- **Tailwind CSS**: Utility-first styling for fast, responsive design.
+- **Lucide Icons**: Consistent, lightweight iconography.
 
 ## Customization
 
@@ -172,10 +169,10 @@ function MyPage() {
 - Global styles in `src/index.css`
 
 ### API Integration
-- Update endpoints in `src/lib/api/end_points.tsx`
-- Modify API calls in `src/lib/api/crud.tsx`
-- Adjust authentication logic in `src/lib/context/auth.tsx`
-- **Optional**: Use Firebase for backend services (see Firebase Integration section)
+- Update endpoints mapping in `src/lib/api/end_points.tsx`.
+- Modify API calls using `fetchData` in your components.
+- Adjust global state logic in `src/lib/context/auth.tsx`.
+- **Optional**: Configure Firebase services (see Firebase Integration section).
 
 ## Firebase Integration (Optional)
 

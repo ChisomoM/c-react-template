@@ -7,17 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          blue: '#212A48',
-          orange: '#E5600B',
-        },
-        secondary: {
-          orange : '#D70F0E'
-        },
-        gradient: {
-          from: '#D70F0E',
-          to: '#E5600B',
-        },
+        blue: '#3B82F6',
+        'blue-dark': '#1E40AF',
+        charcoal: '#1F2937',
+        'gray-dark': '#374151',
+        'gray-mid': '#6B7280',
+        'gray-light': '#E5E7EB',
+        cream: '#F9FAFB',
+        white: '#FFFFFF',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -30,11 +27,7 @@ export default {
         }
       },
       fontFamily: {
-        'myriad': ['Myriad Pro', 'system-ui', 'sans-serif'],
-        'montserrat': ['Montserrat', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-        'outfit': ['Outfit', 'system-ui', 'sans-serif'],
-        'poppins': ['Poppins', 'system-ui', 'sans-serif'],
-        'space-grotesk': ['Space Grotesk', 'system-ui', 'monospace'],
+        inter: ['Inter', 'sans-serif'],
       },
       backgroundImage: {
         'orange-gradient': 'linear-gradient(to right, #D70F0E 0%, #E5600B 70%)',
