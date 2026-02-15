@@ -29,8 +29,10 @@ export default function SignInButton() {
       };
 
       // Step 2: Backend registration
-      const  backendResponse =await oAuthRegister(userData);
+      await oAuthRegister(userData);
 
+      // if result is needed:
+      // const backendResponse = await oAuthRegister(userData);
       // if (!backendResponse.success) {
       //   throw new Error(backendResponse?.message || "Registration failed on our server");
       // }

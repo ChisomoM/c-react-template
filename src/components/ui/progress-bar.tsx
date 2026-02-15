@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
 
 export function ProgressBar() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -35,7 +32,7 @@ export function ProgressBar() {
       clearInterval(progressInterval);
       clearTimeout(completeTimer);
     };
-  }, [pathname, searchParams]);
+  }, []);
 
   // Also listen for link clicks to start loading immediately
   useEffect(() => {

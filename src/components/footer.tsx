@@ -4,12 +4,7 @@ import { Separator } from './ui/separator';
 import { 
   Mail, 
   Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
-  Instagram,
-  ArrowRight
+  MapPin
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 

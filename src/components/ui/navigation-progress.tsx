@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+// import { usePathname, useSearchParams } from "next/navigation";
+// Using React Router instead for Vite projects
+import { useLocation } from "react-router-dom";
 
 interface NavigationProgressContextType {
   startProgress: () => void;
@@ -16,11 +18,12 @@ export function useNavigationProgress() {
 }
 
 export function NavigationProgressProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const location = useLocation();
+  const pathname = location.pathname;
+  const searchParams = new URLSearchParams(location.search);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastPathnameRef = useRef(pathname);
   const lastSearchParamsRef = useRef(searchParams?.toString());
 

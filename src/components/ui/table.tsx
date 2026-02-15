@@ -167,9 +167,16 @@ export {
   TableCaption,
 };
 
-export interface Table<T extends BaseEntity> {
+// BaseEntity generic type with id field
+interface BaseEntity {
+  id: string | number;
+}
+
+export type TableAction = "edit" | "delete" | "view";
+
+export interface TableConfig<T extends BaseEntity = any> {
   items: T[];
-  onSelect: (action: Action, selected: T, index: number) => void;
+  onSelect: (action: TableAction, selected: T, index: number) => void;
   onCustomAction?: (
     action: string,
     selected: T,

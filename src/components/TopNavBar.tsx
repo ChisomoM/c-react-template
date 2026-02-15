@@ -1,6 +1,5 @@
 import { useAuth } from '@/lib/context/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Logo from '../assets/logos/U-KYC-logo-inline.svg?react';
 
 export function TopNavBar() {
   const { user } = useAuth();
@@ -35,9 +34,9 @@ export function TopNavBar() {
     <div className="fixed top-0 left-0 right-0 h-16 z-50 bg-transparent backdrop-blur-sm">
       <div className="h-full px-8 flex items-center justify-between">
         {/* Logo - Left */}
-        <div className="flex items-center">
-          <Logo className="fill-primary-blue h-8 w-auto transition-transform hover:scale-105" />
-        </div>
+        <a href="/" className="flex items-center gap-2">
+          Logo
+        </a>
 
         {/* User Profile - Right */}
         <div className="flex items-center gap-3 bg-white/80 backdrop-blur-md rounded-full mt-4 px-6 py-3  border border-gray-200/50">
