@@ -89,16 +89,16 @@ export function Footer() {
             {/* Contact Info */}
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">info@probasegroup.com</span>
+                <Mail className="w-5 h-5 text-blue-500" />
+                <span className="text-gray-300">kachizo95@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">+260 976 360 360</span>
+                <Phone className="w-5 h-5 text-blue-500" />
+                <span className="text-gray-300">+260 972 682 268</span>
               </div>
               <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-orange-500" />
-                <span className="text-gray-300">Plot 2374 Kelvin Siwale Rd, Lusaka, Zambia</span>
+                <MapPin className="w-5 h-5 text-blue-500" />
+                <span className="text-gray-300">Lusaka, Zambia</span>
               </div>
             </div>
 
@@ -144,7 +144,7 @@ export function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <div className="text-gray-400 text-sm">
-            © {currentYear} Probase Group. All rights reserved.
+            © {currentYear} ChizoTech. All rights reserved.
           </div>
           
           <div className="flex items-center space-x-6 text-sm">

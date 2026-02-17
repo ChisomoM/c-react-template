@@ -40,7 +40,7 @@ export default function Navbar(){
                     {/* Logo */}
                     <a href="/" className="flex-shrink-0">
                         <img 
-                            src="/logos/Probase Logo grad n blue.svg"
+                            src="/logos/chizotech logo black_.png"
                             alt="SmartHub Logo"
                             className="h-12 w-auto object-contain"
                         />

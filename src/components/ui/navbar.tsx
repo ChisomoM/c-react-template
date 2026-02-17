@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import  logo  from '../assets/Probase-logo-blue-Text.svg';
+import logo from '../assets/logos/chizotech logo black_.png';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +35,7 @@ function Navbar() {
   <div className="flex items-center">
     <img 
       src={logo}
-      alt="Probase Logo" 
+      alt="ChizoTech Logo" 
       className="h-8 sm:h-12 md:h-12 w-auto object-contain max-w-[150px] sm:max-w-[180px] md:max-w-[220px]" 
     />
   </div>
