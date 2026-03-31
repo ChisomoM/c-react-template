@@ -12,7 +12,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
   return (
     <main className="h-screen flex flex-col lg:flex-row bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
       {/* Left side - Form content */}
-      <div className="w-full lg:w-1/2 px-4 py-4 sm:px-6 sm:py-6 md:px-8 lg:px-12 flex flex-col gap-4 justify-center h-screen overflow-y-auto">
+      <div className="w-full lg:w-1/2 px-4 py-8 sm:px-6 sm:py-10 md:px-8 lg:px-12 flex flex-col justify-center h-screen overflow-y-auto">
         {/* Logo and Brand */}
 
           {/* <img
@@ -25,15 +25,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
          
 
 
-        <div className="w-full max-w-md mx-auto lg:max-w-none">
+        <div className="w-full max-w-md mx-auto lg:max-w-none py-4">
           <LoginForm onSignUpClick={onSignUpClick} />
         </div>
       </div>
 
       {/* Right side - Brand showcase */}
        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden m-3 lg:m-4 rounded-3xl shadow-2xl">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#E5600B] via-[#D70F0E] to-[#B80D0B]"></div>
+        {/* Gradient background - Blue theme */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2563EB] via-[#1D4ED8] to-[#1E40AF]"></div>
         
         {/* Animated pattern overlay */}
         <div className="absolute inset-0 opacity-10">
@@ -47,10 +47,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
         <div className="relative z-10 flex flex-col justify-between p-6 lg:p-8 xl:p-10 text-white w-full h-full">
           <div className="space-y-4">
             <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight">
-              Secure Digital Identity Verification
+              React Admin Template
             </h2>
             <p className="text-base lg:text-lg opacity-90 leading-relaxed max-w-lg">
-              A modern web application template built with React and TypeScript.
+              A modern, production-ready web application template featuring a professional dashboard, authentication system, and responsive design built with React, TypeScript, Tailwind CSS, and Vite.
             </p>
           </div>
 
@@ -61,8 +61,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-base">Corporate Registration</h3>
-                <p className="text-xs opacity-80">Fast-track your business setup</p>
+                <h3 className="font-semibold text-base">Ready-to-Use Template</h3>
+                <p className="text-xs opacity-80">Pre-built admin dashboard with authentication</p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300">
@@ -70,8 +70,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-base">Secure Verification</h3>
-                <p className="text-xs opacity-80">Bank-level security standards</p>
+                <h3 className="font-semibold text-base">Modern Tech Stack</h3>
+                <p className="text-xs opacity-80">React, TypeScript, Tailwind CSS, Vite</p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300">
@@ -79,8 +79,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSignUpClick }) => {
                 <FileCheck className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-base">Compliance Ready</h3>
-                <p className="text-xs opacity-80">Meet regulatory requirements</p>
+                <h3 className="font-semibold text-base">Production Ready</h3>
+                <p className="text-xs opacity-80">Scalable architecture and best practices</p>
               </div>
             </div>
           </div>

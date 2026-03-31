@@ -61,7 +61,7 @@ export function ProgressBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 h-10 bg-transparent pointer-events-none">
       <div 
-        className="h-full bg-blue-600 transition-all duration-500 ease-out"
+        className="h-full bg-blue transition-all duration-500 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

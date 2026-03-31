@@ -6,7 +6,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { post } from '../api/crud';
+// import { post } from '../api/crud';
 import type {
   AuthUser,
   AuthTokens,
@@ -95,38 +95,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, _password: string) => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // POST to login endpoint (single endpoint, account type detected from response)
-        const response = await post('LOGIN', { email, password });
+       
+          // const response = await post('LOGIN', { email, _password });
 
         // Expect new API shape: response.data.user and response.data.token
-        const payload = response?.data ?? response;
-        const userPayload = payload?.user as LoginUser | undefined;
-        const token = payload?.token as string | undefined;
+        // const payload = response?.data ?? response;
+        // const userPayload = payload?.user as LoginUser | undefined;
+        // const token = payload?.token as string | undefined;
 
-        if (!userPayload || !token) {
-          throw new Error('Invalid login response from server');
-        }
+        // if (!userPayload || !token) {
+        //   throw new Error('Invalid login response from server');
+        // }
+        // const authUser = deriveUserFromResponse(userPayload);
+        // const authTokens: AuthTokens = { token };
+         // Fake authentication logic - always succeed for dev
+        // if (email === 'admin@example.com' && password === 'password') {
+          // Create fake user data
+          const fakeUserPayload: LoginUser = {
+            blocked: false,
+            id: 1,
+            status: 1,
+            username: 'admin',
+            email: email || 'admin@example.com',
+            first_name: 'Admin',
+            last_name: 'User',
+            is_superUser: true,
+            mobile: null,
+            last_login_date: new Date().toISOString(),
+            failed_attempts: 0,
+            role_id: 1,
+          };
 
-        const authUser = deriveUserFromResponse(userPayload);
-        const authTokens: AuthTokens = { token };
+          const fakeToken = 'fake-jwt-token-' + Date.now();
 
-        // Save to storage and update context
-        saveToStorage(authUser, authTokens);
-        setTokens(authTokens);
-        setUser(authUser);
+          const authUser = deriveUserFromResponse(fakeUserPayload);
+          const authTokens: AuthTokens = { token: fakeToken };
 
-        // Show success message
-        toast.success('Login successful!');
+          // Save to storage and update context
+          saveToStorage(authUser, authTokens);
+          setTokens(authTokens);
+          setUser(authUser);
 
-        // Auto-redirect based on detected account type
-        // const redirectPath = authUser.accountType === 'system_admin' ? '/admin/dashboard' : '/merchant/dashboard';
-        const redirectPath = '/admin/dashboard';
-        navigate(redirectPath);
+          // Show success message
+          toast.success('Login successful!');
+
+          // Auto-redirect to admin dashboard
+          const redirectPath = '/admin/dashboard';
+          navigate(redirectPath);
+        // } else {
+        //   throw new Error('Invalid credentials');
+        // }
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Login failed';
         setError(errorMsg);

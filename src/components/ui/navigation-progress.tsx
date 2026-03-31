@@ -137,7 +137,7 @@ export function NavigationProgressProvider({ children }: { children: React.React
       {isLoading && (
         <div className="fixed top-0 left-0 right-0 z-[9999] h-2 bg-transparent pointer-events-none">
           <div 
-            className="h-full bg-blue-600 transition-all duration-200 ease-out shadow-lg shadow-blue-600/50"
+            className="h-full bg-blue transition-all duration-200 ease-out shadow-lg shadow-blue/50"
             style={{ width: `${progress}%` }}
           />
         </div>

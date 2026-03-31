@@ -70,7 +70,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full h-10 transition-all duration-200 focus:ring-2 focus:ring-[#E5600B] focus:border-transparent text-sm"
+              className="w-full h-10 transition-all duration-200 focus:ring-2 focus:ring-blue focus:border-transparent text-sm"
               disabled={isLoading}
             />
           </div>
@@ -87,7 +87,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-[#E5600B] focus:border-transparent text-sm"
+                className="w-full h-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue focus:border-transparent text-sm"
                 disabled={isLoading}
               />
               <Button
@@ -111,7 +111,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
             <button
               type="button"
               // onClick={() => setShowForgotPassword(true)}
-              className="text-xs sm:text-sm text-[#E5600B] hover:text-[#D70F0E] font-medium transition-colors duration-200 hover:underline"
+              className="text-xs sm:text-sm text-blue hover:text-blue-dark font-medium transition-colors duration-200 hover:underline"
             >
               Forgot password?
             </button>
@@ -119,7 +119,7 @@ className="h-14 w-auto mx-auto transform hover:scale-105 transition-transform du
 
           <Button
             type="submit"
-            className="w-full h-10 bg-gradient-to-r from-[#E5600B] to-[#D70F0E] hover:from-[#D70F0E] hover:to-[#B80D0B] text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-sm"
+            className="w-full h-10 bg-gradient-to-r from-blue to-blue-dark hover:from-blue-dark hover:to-blue-dark text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-sm"
             disabled={isLoading}
           >
             {isLoading ? (
